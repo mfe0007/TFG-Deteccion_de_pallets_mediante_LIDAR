@@ -1,0 +1,62 @@
+\capitulo{3}{Conceptos teóricos}
+
+En este apartado de la memoria se proceden a describir todos los conceptos y conocimientos necesarios para la realización del mismo. Parte de esos conocimientos se han adquirido en el grado, mientras que otros se han ido descubriendo a la par que la realización del proyecto.
+
+
+
+\section{Material necesario}
+
+Se ha usado el siguiente hardware para la realización del proyecto:
+\begin{itemize}
+	\item Sensor Láser: Encargado de sondear el entorno y devolver los datos obtenidos. El láser que se va a utilizar es de tipo LIDAR (Laser Imaging Detector And Ranging).
+Este tipo de láser emite ondas infrarrojas, para despues recoger las ondas de vuelta, y en función del tiempo entre la emisión y la recepción calcula la distancia.
+En este proyecto, se ha utilizado el láser Hokuyo Safety Laser Scanner (UAM-05LP-T301), capaz de distinguir tres zonas independientes de detección en función de la distancia a la que se encuentren los objetos en el entorno.
+	\item Cable ethernet: A través de este cable se envian y reciben datos del láser al ordenador. Se usará un UAM-NET, un cable Ethrernet de 3 metros de longitud desarrollado por Hokuyo, misma empresa desarrolladora del láser empleado, lo que hace que resulte idóneo para evitar problemas de incompatibilidad y asegurar así el correcto funcionamiento del sistema.
+	\item Ordenador: Es la parte central del proyecto. Con él, se ejecuta el sistema software encargado de procesar los datos que recibe de la unidad láser, y mediante una serie de algortimos, concluir la detección o no de un palet en el área visionada.
+\end{itemize}
+
+\section{Tratamiento de los datos del láser}
+El software desarrollado en este proyecto es el encargado de recibir los datos del láser, para su posterior procesado. Los datos se reciben en forma de tramas y se les debe aplicar un proceso de tratamiento para separar datos no relevantes de las tramas. Posteriormente se deben traducir estos datos de coordenadas polares a coordenadas cartesianas, y finalmente, ejecutar los algoritmos que determinan la posible detección de un palet.
+
+\subsection{Uso del láser}
+Para poder establecer la comunicación con el láser y ordenarle la captura de datos, se utilizan comandos. Aunque existen multitud de comandos disponibles, para nuestro objetivo nos bastara con utilizar los comandos de tipo AR, los cuales ordenan al laser devolver los datos de lectura.
+Existen 6 comandos de este tipo.
+\begin{enumerate}
+	\item AR00: Medición única en la que devuelve las distancias.
+	\item AR01: Medición única en la que devuelve las distancias e intensidades.
+	\item AR02: Medición contínua en la que devuelve las distancias.
+	\item AR03: Detiene la continuidad del comando AR02.
+	\item AR04: Medición contínua en la que devuelve las distancias en intensidades.
+	\item AR05: Detiene la continuidad del comando AR04.
+
+
+\subsection{Tránsito de mensajes}
+Una vez determinado el comando que se quiere utilizar, se debe crear una estructura de mensaje para enviarselo al láser con el siguiente formato:
+\begin{itemize}
+	\item STX: Tipo caracter, en bytes, que marca el comienzo del mensaje. Normalmente es un '2'.
+ 	\item Command size: Tamaño del mensaje que se va a enviar. Formato hexadecimal. En este proyecto, los comandos van a ocupar siempre el mismo espacio, 14 caracteres, con lo que esta parte del mensaje siempre será '000E'.
+ 	\item Header: Tipo de comando que se le manda al laser, como se ha mencionado antes, en este proyecto solo se usa el tipo AR.
+ 	\item Subheader: Especificación del comando que se va a utilizar dentro de la familia de comandos escogida en la cabecera.
+ 	\item CRC:  Comprobacion de redundacia Cíclica.Código que se añade para asegurar que el mensaje no se ha corrompido en el envío del mismo. 
+ 	\item EXT: Tipo caracter, en bytes, que marca el final del mensaje. Normalmente es un '3'.
+ \end{itemize}
+
+En los mensajes devueltos por el láser al pedirle información de una lectura mediante un comando, se encuentra información como el tiempo empleado para la lectura, estado de los puertos etc que no tiene utilidad en este proyecto. Es por esto que debe ser llevado a cabo un proceso de traducción para extraer la información que nos interesa de las tramas que nos devuelve el láser de las lecturas.
+
+\subsection{Traducción}
+
+Una vez extraidos los datos de cada apartado de la cadena devuelta por el láser, estos deben ser traducidos en base a los siguientes pasos:
+\begin{enumerate}
+	\item Se extrae uno por uno el dato en hexadecimal de los caracteres.
+	\item Si este dato está comprendido entre $30_{h}$ y  $39_{h}$, se le resta  $30_{h}$. Mientras que si está entre  $41_{h}$ y  $46_{h}$, se le resta $37_{h}$.
+	\item Se convierte cada dato hexadecimal a binario.
+	\item Se agrupan todos los datos en binario y se traduce la agrupación a decimal para expresar el dato en milímetros.
+\end{enumerate}
+
+Después, por cada dato traducido, se asigna a cada uno un ángulo correspondiente para expresar así la lectura en coordenadas polares.
+Posteriormente, se traducen los datos de coordenadas polares a coordenadas cartesianas mediante la siguiente formula:
+
+x = r * cos(\(\theta\))\\
+y = r * sin(\(\theta\))\\
+
+Ahora ya se dispone de una lista de distancia y angulo, adecuada para poder ser representada en una gráfica.
