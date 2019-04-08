@@ -1,1 +1,6 @@
-# TFG-Deteccion_de_pallets_mediante_LIDAR
+# DETECCIÓN DE PALLETS MEDIANTE LASER - TRABAJO DE FIN DE GRADO EN LA UNIVERSIDAD DE BURGOS  
+Tutor: Jesús Enrique Sierra   
+Alumno: Mario Flores Espiga  
+
+En este trabajo se busca investigar algoritmos capaces de reconocer pallets en un entorno industrial usando un laser de tipo LIDAR.  
+El modelo de láser utilizado es el HOKUYO 
