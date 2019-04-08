@@ -9,9 +9,8 @@ from Punto import Punto
 from pynput import keyboard
 import time
 import numpy as np
-from Tkinter import Entry,Tk,mclass
+from tkinter import *
 import matplotlib.pyplot as plt
-matplotlib.use('TKAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
     
@@ -66,7 +65,6 @@ def procesadoYMuestra(target, printable):
     """Separamos por el string de datos en partes de longitud 4 (longitud de cada dato).
     La longitud es calculada como 4324(número de caracteres de medición recibidos)/1081
     (número de mediciones realizadas por el láser) = 4(caracteres/medición) """
-    print(len(target))
     datosSeparados=[ [target[i:i+4]] for i in range(0, int(len(target)), 4) ]
     """Eliminamos el último de los elementos ya que pertenece a información ajena a los 
     datos de medida"""
@@ -173,14 +171,16 @@ try:
 
     		# Se separa los datos del resto de información enviada por el laser
             datos_lectura=re.split('\x02|\x03',sens)
+            print(len(datos_lectura))
 
     		#Eliminamos las divisiones inecesarias (ya que se producen divisiones vacias)
             for e in datos_lectura:
                 if(len(e)<50):
                     datos_lectura.remove(e)
-
+    
     		#Escogemos como dato el primero de los grupos de datos y retiramos los datos correspondientes a información innecesaria.
             target=datos_lectura[1][97:]
+
           
             if(iteration % 5 == 0):
                 
