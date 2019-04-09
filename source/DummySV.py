@@ -30,28 +30,30 @@ def conexiones(socket_cliente):
         socket_cliente.send(b)
     socket_cliente.close()
 
-ip = "127.0.0.1" 
-puerto = 10500 
-max_conexiones = 5 
-servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-servidor.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) 
-h_conexion=list()
-
-
-servidor.bind((ip, puerto))
-servidor.listen(max_conexiones)
-
-
-print ("[*] Esperando conexiones en %s:%d" % (ip, puerto))
-
-
-while True:
+def main():
+    ip = "127.0.0.1" 
+    puerto = 10500 
+    max_conexiones = 5 
+    servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    servidor.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) 
+    h_conexion=list()
+    
+    
+    servidor.bind((ip, puerto))
     servidor.listen(max_conexiones)
-    cliente, direccion = servidor.accept()
-    print ("[*] Conexion establecida con %s:%d" % (direccion[0] , direccion[1]))
-    conex = threading.Thread(target=conexiones, args=(cliente,))
-    conex.start()
-    h_conexion.append(conex)
-
-for hilo in h_conexion:
-    hilo.join()
+    
+    
+    print ("[*] Esperando conexiones en %s:%d" % (ip, puerto))
+    
+    
+    while True:
+        servidor.listen(max_conexiones)
+        cliente, direccion = servidor.accept()
+        print ("[*] Conexion establecida con %s:%d" % (direccion[0] , direccion[1]))
+        conex = threading.Thread(target=conexiones, args=(cliente,))
+        conex.start()
+        h_conexion.append(conex)
+    
+    for hilo in h_conexion:
+        hilo.join()
+main()

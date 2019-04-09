@@ -9,7 +9,7 @@ from Punto import Punto
 from pynput import keyboard
 import time
 import numpy as np
-from tkinter import *
+from tkinter import Tk,Frame, Button
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
@@ -21,198 +21,214 @@ from matplotlib.figure import Figure
 
 
 
-
-"""Esta función se utiliza para tradurcir los datos recibidos del láser a números
-    decimales según la forma de traducir descrita en la documentación del
-    dispositivo"""
-def toDecimal(sensin):
-    total=[]
-    for elem in sensin:
-        res=""
-        for i in elem:
-            t=int(i,16)
-            if t > int('0x30',16) and t < int('0x39',16):
-                t = t - int('0x30',16)
-            elif t > int('0x41',16) and t < int('0x46',16):
-                t = t - int('0x37',16)
-            binario = bin(int(t))
-            res = res + str(binario)
-        total.append(str(int(res,2)))
-    return total
-
-
-#Función para traducir las coordenadas polares a cartesianas        
-def aCartesianos(p):
-    coorX=p.getX()
-    coorY=p.getY()
+class User_Interface:
     
-    coor1=math.fabs(coorX)*math.cos(math.radians(coorY))
-    coor2=math.fabs(coorX)*math.sin(math.radians(coorY))
     
-    puntoCart=Punto()
-    puntoCart.setX(coor1)
-    puntoCart.setY(coor2)
-    return puntoCart
-
-"""Se necesita crear esta función debido a errores presentes en la creación de 
-    una lista de ángulos"""
-def creaangulos(x, y, jump):
-    while x < y:
-        yield x
-        x += jump
-
-def procesadoYMuestra(target, printable):
-    """Separamos por el string de datos en partes de longitud 4 (longitud de cada dato).
-    La longitud es calculada como 4324(número de caracteres de medición recibidos)/1081
-    (número de mediciones realizadas por el láser) = 4(caracteres/medición) """
-    datosSeparados=[ [target[i:i+4]] for i in range(0, int(len(target)), 4) ]
-    """Eliminamos el último de los elementos ya que pertenece a información ajena a los 
-    datos de medida"""
-    datosSeparados.pop(-1)
     
-    #Pasamos cada elemento del anteior array de hexadecimal a decimal
-    final=toDecimal(datosSeparados)
     
-    #Creamos la lista con ángulos
-    angulos=list(creaangulos(-45,225,270/1081))
     
-    #Creamos una lista de puntos con coordenadas polares
-    listaPolares=list()
-    for i in range(len(final)):
-        #if(int(final[i])<40000):
-        p=Punto(int(final[i]),angulos[i])
-        listaPolares.append(p)
+    def __init__(self,  master):
+        self.frame = Frame(master)
+        self.frame.pack()
+        self.start_button = Button(master,text="Comenzar la ejecucion", command=self.mainFunction)
+        self.start_button.pack(side="left")
+        #self.sv_button = Button(master,text="Iniciar servidor de prueba", command=DummySV.main())
+        #self.sv_button.pack(side="left")
     
-    #Pasamos las coordenadas de cada punt de polares a cartesianas
-    listaCartesianos=list()
-    listaCX=list()
-    listaCY=list()
-    for pun in listaPolares:
-        punto=aCartesianos(pun)
-        listaCX.append(punto.getX())
-        listaCY.append(punto.getY())
-        listaCartesianos.append(punto)
+    
+    
+    
+    
+    
+    
+    """Esta función se utiliza para tradurcir los datos recibidos del láser a números
+        decimales según la forma de traducir descrita en la documentación del
+        dispositivo"""
+    def toDecimal(sensin):
+        total=[]
+        for elem in sensin:
+            res=""
+            for i in elem:
+                t=int(i,16)
+                if t > int('0x30',16) and t < int('0x39',16):
+                    t = t - int('0x30',16)
+                elif t > int('0x41',16) and t < int('0x46',16):
+                    t = t - int('0x37',16)
+                binario = bin(int(t))
+                res = res + str(binario)
+            total.append(str(int(res,2)))
+        return total
+    
+    
+    #Función para traducir las coordenadas polares a cartesianas        
+    def aCartesianos(p):
+        coorX=p.getX()
+        coorY=p.getY()
         
-   
-    if(printable):    
-        #Impresión de la gráfica
-        coorXgrafico= np.array(listaCX)
-        coorYgrafico=np.array(listaCY)
+        coor1=math.fabs(coorX)*math.cos(math.radians(coorY))
+        coor2=math.fabs(coorX)*math.sin(math.radians(coorY))
         
-        plt.scatter(coorXgrafico,coorYgrafico, color='blue')
-        
-        plt.figure(figsize=(40,10))
-        plt.show()
-
-    return listaCartesianos
+        puntoCart=Punto()
+        puntoCart.setX(coor1)
+        puntoCart.setY(coor2)
+        return puntoCart
     
-
-
-
-
-# Se crea el socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-# Se conecta y se comprueba que la conexión se realizó con exito
-conectado = os.system('ping -w 10 -n 2 192.168.0.10')
-if conectado == 0:
-    server_address = ('192.168.0.10', 10940)
-else:
-    server_address = ('127.0.0.1', 10500)
-
-print (sys.stderr, 'connecting to %s port %s' % server_address)
-try:
-    sock.connect(server_address)
-except socket.timeout:
-    print('Error de conexion')
+    """Se necesita crear esta función debido a errores presentes en la creación de 
+        una lista de ángulos"""
+    def creaangulos(x, y, jump):
+        while x < y:
+            yield x
+            x += jump
     
-try:
+    def procesadoYMuestra(target, printable):
+        """Separamos por el string de datos en partes de longitud 4 (longitud de cada dato).
+        La longitud es calculada como 4324(número de caracteres de medición recibidos)/1081
+        (número de mediciones realizadas por el láser) = 4(caracteres/medición) """
+        datosSeparados=[ [target[i:i+4]] for i in range(0, int(len(target)), 4) ]
+        """Eliminamos el último de los elementos ya que pertenece a información ajena a los 
+        datos de medida"""
+        datosSeparados.pop(-1)
+        
+        #Pasamos cada elemento del anteior array de hexadecimal a decimal
+        final=User_Interface.toDecimal(datosSeparados)
+        
+        #Creamos la lista con ángulos
+        angulos=list(User_Interface.creaangulos(-45,225,270/1081))
+        
+        #Creamos una lista de puntos con coordenadas polares
+        listaPolares=list()
+        for i in range(len(final)):
+            #if(int(final[i])<40000):
+            p=Punto(int(final[i]),angulos[i])
+            listaPolares.append(p)
+        
+        #Pasamos las coordenadas de cada punt de polares a cartesianas
+        listaCartesianos=list()
+        listaCX=list()
+        listaCY=list()
+        for pun in listaPolares:
+            punto=User_Interface.aCartesianos(pun)
+            listaCX.append(punto.getX())
+            listaCY.append(punto.getY())
+            listaCartesianos.append(punto)
+            
+       
+        if(printable):    
+            #Impresión de la gráfica
+            coorXgrafico= np.array(listaCX)
+            coorYgrafico=np.array(listaCY)
+            
+            plt.scatter(coorXgrafico,coorYgrafico, color='blue')
+            
+            plt.figure(figsize=(40,10))
+            plt.show()
     
-    # Envio del mensaje (000EAR02 - Envio continuo de información de escaneo)
-    message = [bytes([2]),chr(48),chr(48),chr(48),chr(69),chr(65),chr(82),chr(48),chr(50),binascii.unhexlify(b"00"),binascii.unhexlify(b"83"),bytes([3])]
-    b = bytearray()
-    b.extend(map(ord, message))
-    print (sys.stderr, 'sending "%s"' % b)
-    sock.send(b)
-
-    # Se recoge la respuesta (En este caso la información de lectura del láser)
-    """num_sens=2
-    amount_expected = 4500*num_sens
-    """
-    sens=""
-    amount_received = 0
-    datosFinales=list()
-    exit = False
-    		
-    def on_Press(self, key):
-        global exit
-        if (key == keyboard.Key.end):
-            print("Finalizando bucle")
-            exit = False
-            return False
-    with keyboard.Listener(on_Press = on_Press) as listener:
+        return listaCartesianos
         
-        num_sens=2
-        amount_received = 0
-        amount_expected = 4500*num_sens
-        iteration = 0
+    
+    
+    
+    def mainFunction(self):
+        # Se crea el socket
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         
-        while not exit:
-            iteration+=1
-            start = time.time()
-                   
+        # Se conecta y se comprueba que la conexión se realizó con exito
+        conectado = os.system('ping -w 10 -n 2 192.168.0.10')
+        if conectado == 0:
+            server_address = ('192.168.0.10', 10940)
+        else:
+            server_address = ('127.0.0.1', 10500)
+        
+        print (sys.stderr, 'connecting to %s port %s' % server_address)
+        try:
+            sock.connect(server_address)
+        except socket.timeout:
+            print('Error de conexion')
+            
+        try:
+            
+            # Envio del mensaje (000EAR02 - Envio continuo de información de escaneo)
+            message = [bytes([2]),chr(48),chr(48),chr(48),chr(69),chr(65),chr(82),chr(48),chr(50),binascii.unhexlify(b"00"),binascii.unhexlify(b"83"),bytes([3])]
+            b = bytearray()
+            b.extend(map(ord, message))
+            print (sys.stderr, 'sending "%s"' % b)
+            sock.send(b)
+        
+            # Se recoge la respuesta (En este caso la información de lectura del láser)
+            """num_sens=2
+            amount_expected = 4500*num_sens
+            """
             sens=""
-            while amount_received < amount_expected:
-                data = sock.recv(32)
-                sens+= data.decode('utf-8')
-                amount_received += len(data)
-
             amount_received = 0
-
-    		# Se separa los datos del resto de información enviada por el laser
-            datos_lectura=re.split('\x02|\x03',sens)
-            print(len(datos_lectura))
-
-    		#Eliminamos las divisiones inecesarias (ya que se producen divisiones vacias)
-            for e in datos_lectura:
-                if(len(e)<50):
-                    datos_lectura.remove(e)
-    
-    		#Escogemos como dato el primero de los grupos de datos y retiramos los datos correspondientes a información innecesaria.
-            target=datos_lectura[1][97:]
-
-          
-            if(iteration % 5 == 0):
+            datosFinales=list()
+            exit = False
+            		
+            def on_Press(self, key):
+                global exit
+                if (key == keyboard.Key.end):
+                    print("Finalizando bucle")
+                    exit = False
+                    return False
+            with keyboard.Listener(on_Press = on_Press) as listener:
                 
-                datosFinales.append(procesadoYMuestra(target,True))
-            else:
-                datosFinales.append(procesadoYMuestra(target,False))
-
+                num_sens=2
+                amount_received = 0
+                amount_expected = 4500*num_sens
+                iteration = 0
+                
+                while not exit:
+                    iteration+=1
+                    start = time.time()
+                           
+                    sens=""
+                    while amount_received < amount_expected:
+                        data = sock.recv(32)
+                        sens+= data.decode('utf-8')
+                        amount_received += len(data)
+        
+                    amount_received = 0
+        
+            		# Se separa los datos del resto de información enviada por el laser
+                    datos_lectura=re.split('\x02|\x03',sens)
+                    print(len(datos_lectura))
+        
+            		#Eliminamos las divisiones inecesarias (ya que se producen divisiones vacias)
+                    for e in datos_lectura:
+                        if(len(e)<50):
+                            datos_lectura.remove(e)
             
-            end = time.time()
+            		#Escogemos como dato el primero de los grupos de datos y retiramos los datos correspondientes a información innecesaria.
+                    target=datos_lectura[1][97:]
+        
+                  
+                    if(iteration % 5 == 0):
+                        
+                        datosFinales.append(self.procesadoYMuestra(target,True))
+                    else:
+                        datosFinales.append(self.procesadoYMuestra(target,False))
+        
+                    
+                    end = time.time()
+                    
+                    print("FPS:",(1/(end-start)))
+                listener.join()
+                
+                
+                
+        	
             
-            print("FPS:",(1/(end-start)))
-        listener.join()
         
-        
-        
-	
-    
-
-finally:
-    print (sys.stderr, 'closing socket')
-    messagecierre = [bytes([2]),chr(48),chr(48),chr(48),chr(69),chr(65),chr(82),chr(48),chr(51),binascii.unhexlify(b"89"),binascii.unhexlify(b"92"),bytes([3])]
-    bcierre = bytearray()
-    bcierre.extend(map(ord, messagecierre))
-    sock.send(bcierre)
-    sock.close()
+        finally:
+            print (sys.stderr, 'closing socket')
+            messagecierre = [bytes([2]),chr(48),chr(48),chr(48),chr(69),chr(65),chr(82),chr(48),chr(51),binascii.unhexlify(b"89"),binascii.unhexlify(b"92"),bytes([3])]
+            bcierre = bytearray()
+            bcierre.extend(map(ord, messagecierre))
+            sock.send(bcierre)
+            sock.close()
 
 
-class graph:
-    def __init__(self,  window):
-        self.window = window
-        self.box = Entry(window)
-        self.box.pack ()
+
+
 
     def plot (self,x,y):
         
@@ -228,9 +244,13 @@ class graph:
         canvas.get_tk_widget().pack()
         canvas.draw()
 
-    window= Tk()
-    start= mclass (window)
-    window.mainloop()
+
+"""Aqui se crea la ventana principal de la interfaz grafica y se instancia el objeto
+con los metodos para conectar y tratar los datos"""
+root = Tk()
+myclass = User_Interface(root)
+
+root.mainloop()
     
     
     
