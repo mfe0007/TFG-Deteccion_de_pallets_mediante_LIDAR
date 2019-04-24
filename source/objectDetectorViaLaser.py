@@ -6,12 +6,13 @@ import math
 import re
 import os
 from Punto import Punto
+from GUI import MyGUI
 from pynput import keyboard
 import time
 import numpy as np
 from tkinter import Tk,Frame, Button
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
     
 
@@ -21,25 +22,13 @@ from matplotlib.figure import Figure
 
 
 
-class User_Interface:
+class Operations:
     
     
     
     
     
-    def __init__(self,  master):
-        self.frame = Frame(master)
-        self.frame.pack()
-        self.start_button = Button(master,text="Comenzar la ejecucion", command=self.mainFunction)
-        self.start_button.pack(side="left")
-        #self.sv_button = Button(master,text="Iniciar servidor de prueba", command=DummySV.main())
-        #self.sv_button.pack(side="left")
-    
-    
-    
-    
-    
-    
+   
     
     """Esta función se utiliza para tradurcir los datos recibidos del láser a números
         decimales según la forma de traducir descrita en la documentación del
@@ -79,8 +68,13 @@ class User_Interface:
         while x < y:
             yield x
             x += jump
+            
+            
+
+        
+        
     
-    def procesadoYMuestra(target, printable):
+    def procesadoYMuestra(self,target, printable):
         """Separamos por el string de datos en partes de longitud 4 (longitud de cada dato).
         La longitud es calculada como 4324(número de caracteres de medición recibidos)/1081
         (número de mediciones realizadas por el láser) = 4(caracteres/medición) """
@@ -117,11 +111,10 @@ class User_Interface:
             #Impresión de la gráfica
             coorXgrafico= np.array(listaCX)
             coorYgrafico=np.array(listaCY)
-            
-            plt.scatter(coorXgrafico,coorYgrafico, color='blue')
-            
-            plt.figure(figsize=(40,10))
-            plt.show()
+############################################
+            raiz = MyGUI(coorXgrafico,coorYgrafico)
+            MyGUI.matplotCanvas(raiz)
+            raiz.mainloop()
     
         return listaCartesianos
         
@@ -133,7 +126,7 @@ class User_Interface:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         
         # Se conecta y se comprueba que la conexión se realizó con exito
-        conectado = os.system('ping -w 10 -n 2 192.168.0.10')
+        conectado = os.system('ping -w 10 -n 2 192.168.0.10 >/dev/null 2>&1')
         if conectado == 0:
             server_address = ('192.168.0.10', 10940)
         else:
@@ -190,7 +183,7 @@ class User_Interface:
         
             		# Se separa los datos del resto de información enviada por el laser
                     datos_lectura=re.split('\x02|\x03',sens)
-                    print(len(datos_lectura))
+                    #print(len(datos_lectura))
         
             		#Eliminamos las divisiones inecesarias (ya que se producen divisiones vacias)
                     for e in datos_lectura:
@@ -200,7 +193,7 @@ class User_Interface:
             		#Escogemos como dato el primero de los grupos de datos y retiramos los datos correspondientes a información innecesaria.
                     target=datos_lectura[1][97:]
         
-                  
+
                     if(iteration % 5 == 0):
                         
                         datosFinales.append(self.procesadoYMuestra(target,True))
@@ -230,28 +223,11 @@ class User_Interface:
 
 
 
-    def plot (self,x,y):
-        
-        fig = Figure(figsize=(6,6))
-        a = fig.add_subplot(111)
-        a.scatter(x,y,color='red')
-        
-        a.set_title ("Lectura del laser", fontsize=16)
-        a.set_ylabel("Y", fontsize=14)
-        a.set_xlabel("X", fontsize=14)
-
-        canvas = FigureCanvasTkAgg(fig, master=self.window)
-        canvas.get_tk_widget().pack()
-        canvas.draw()
-
-
-"""Aqui se crea la ventana principal de la interfaz grafica y se instancia el objeto
-con los metodos para conectar y tratar los datos"""
-root = Tk()
-myclass = User_Interface(root)
-
-root.mainloop()
     
+
+if __name__ == '__main__':
+    obj = Operations()
+    obj.mainFunction()
     
     
     
