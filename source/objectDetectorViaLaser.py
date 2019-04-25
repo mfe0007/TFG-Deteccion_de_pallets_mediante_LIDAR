@@ -75,6 +75,8 @@ class Operations:
         
     
     def procesadoYMuestra(self,target, printable):
+        
+        start=time.time()
         """Separamos por el string de datos en partes de longitud 4 (longitud de cada dato).
         La longitud es calculada como 4324(número de caracteres de medición recibidos)/1081
         (número de mediciones realizadas por el láser) = 4(caracteres/medición) """
@@ -84,10 +86,10 @@ class Operations:
         datosSeparados.pop(-1)
         
         #Pasamos cada elemento del anteior array de hexadecimal a decimal
-        final=User_Interface.toDecimal(datosSeparados)
+        final=Operations.toDecimal(datosSeparados)
         
         #Creamos la lista con ángulos
-        angulos=list(User_Interface.creaangulos(-45,225,270/1081))
+        angulos=list(Operations.creaangulos(-45,225,270/1081))
         
         #Creamos una lista de puntos con coordenadas polares
         listaPolares=list()
@@ -101,19 +103,23 @@ class Operations:
         listaCX=list()
         listaCY=list()
         for pun in listaPolares:
-            punto=User_Interface.aCartesianos(pun)
+            punto=Operations.aCartesianos(pun)
             listaCX.append(punto.getX())
             listaCY.append(punto.getY())
             listaCartesianos.append(punto)
             
-       
+        end = time.time()
+                    
+        print("FPS:",(1/(end-start)))
+        
         if(printable):    
             #Impresión de la gráfica
             coorXgrafico= np.array(listaCX)
             coorYgrafico=np.array(listaCY)
 ############################################
             raiz = MyGUI(coorXgrafico,coorYgrafico)
-            MyGUI.matplotCanvas(raiz)
+            raiz.matplotCanvas(1/(end-start))
+            
             raiz.mainloop()
     
         return listaCartesianos
@@ -171,7 +177,6 @@ class Operations:
                 
                 while not exit:
                     iteration+=1
-                    start = time.time()
                            
                     sens=""
                     while amount_received < amount_expected:
@@ -201,9 +206,7 @@ class Operations:
                         datosFinales.append(self.procesadoYMuestra(target,False))
         
                     
-                    end = time.time()
                     
-                    print("FPS:",(1/(end-start)))
                 listener.join()
                 
                 
