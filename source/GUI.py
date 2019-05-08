@@ -1,37 +1,55 @@
-from tkinter import Tk, Label
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.figure import Figure
+from matplotlib import style
+import matplotlib.animation as animation
+import matplotlib.pyplot as plt
+
+
     
 
 
 
 
-class MyGUI(Tk):
-    def __init__(self,x,y):
-        super(MyGUI, self).__init__()
-        self.title("Tkinter Matplotlib Embeding")
-        self.x = x
-        self.y = y
-        self.minsize(640, 400)
-        #self.wm_iconbitmap('icon.ico')
-        #self.configure(background = '#4D4D4D')
+class MyGUI():
 
+    style.use('fivethirtyeight')
+    
+    def __init_(self):
+        self.fig = plt.figure()
+        self.ax1 = self.fig.add_subplot(1,1,1)
+        
+        
+    
+    def animate(self,i):
+        try:
+            data = open('plotdata.txt','r')
+            #data.read()
+            lines = [line.rstrip('\n') for line in data]
+            #print(lines)
+
+            xs = []
+            ys = []
+            for line in lines:
+                if len(line)>1:
+                    x,y = line.split(',')
+                    xs.append(x)
+                    ys.append(y)
+            self.ax1.clear()
+            self.ax1.plot(xs,ys)
+
+            print("Plotting new data")
+        finally:
+            data.close()
+
+    def start(self,function):
+        fig = plt.figure()
+        self.ax1 = fig.add_subplot(1,1,1)
+
+        a = animation.FuncAnimation(fig, function, interval = 1000)
+        plt.ioff()
+        print("Before plt.show")
+        plt.show(block=False)
+        print("After plt show")
+        plt.show()
         
 
-
-    def matplotCanvas(self,fps):
-        
-        f = Figure(figsize=(5,5), dpi=100)
-        
-        a = f.add_subplot(111)
-        a.plot(self.x,self.y)
-        
-        canvas = FigureCanvasTkAgg(f, self)
-        canvas.draw()
-        canvas.get_tk_widget().pack(side = "bottom", fill = "both", expand = True)
-        frames = Label(canvas._tkcanvas,text="FPS: "+str(round(fps,2)))
-        
-
-        toolbar = NavigationToolbar2Tk(canvas, self)
-        canvas._tkcanvas.pack(side = "top", fill = "both", expand = True)
-        frames.pack()
+    
+   

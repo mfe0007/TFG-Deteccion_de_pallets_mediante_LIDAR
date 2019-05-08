@@ -6,14 +6,13 @@ import math
 import re
 import os
 from Punto import Punto
-from GUI import MyGUI
-from pynput import keyboard
+import GUI
 import time
 import numpy as np
-from tkinter import Tk,Frame, Button
+from sklearn.cluster import DBSCAN
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.figure import Figure
+
+
     
 
 
@@ -74,7 +73,7 @@ class Operations:
         
         
     
-    def procesadoYMuestra(self,target, printable):
+    def procesadoYMuestra(self,target):
         
         start=time.time()
         """Separamos por el string de datos en partes de longitud 4 (longitud de cada dato).
@@ -98,7 +97,7 @@ class Operations:
             p=Punto(int(final[i]),angulos[i])
             listaPolares.append(p)
         
-        #Pasamos las coordenadas de cada punt de polares a cartesianas
+        #Pasamos las coordenadas de cada punto de polares a cartesianas
         listaCartesianos=list()
         listaCX=list()
         listaCY=list()
@@ -108,19 +107,41 @@ class Operations:
             listaCY.append(punto.getY())
             listaCartesianos.append(punto)
             
+        
+        
+            
+        #Actualizacion del fichero con los datos del grafico
+        coorXgrafico= np.array(listaCX)
+        coorYgrafico=np.array(listaCY)
+
+        #Creacion de archivo para mantener el grafico actualizado
+        #file = open("plotdata.txt","a+")
+        
+        points = list()
+        for x,y in zip(coorXgrafico,coorYgrafico):
+            points.append(list((x,y)))
+        
+      
+        
+        clustering = DBSCAN(algorithm = 'auto')
+        model = clustering.fit(points)
+        n_clusters = len(set(model.labels_)) - (1 if -1 in model.labels_ else 0)
+        
+        #testintg plot
+        plt.scatter(*zip(*points))
+        plt.show()
+        time.sleep(1)
+
+
+            
+            #file.write(str(x)+","+str(y)+"\n")
+        #file.close()
+       
+    
         end = time.time()
                     
         print("FPS:",(1/(end-start)))
         
-        if(printable):    
-            #Impresión de la gráfica
-            coorXgrafico= np.array(listaCX)
-            coorYgrafico=np.array(listaCY)
-############################################
-            raiz = MyGUI(coorXgrafico,coorYgrafico)
-            raiz.matplotCanvas(1/(end-start))
-            
-            raiz.mainloop()
     
         return listaCartesianos
         
@@ -128,6 +149,8 @@ class Operations:
     
     
     def mainFunction(self):
+        
+
         # Se crea el socket
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         
@@ -143,15 +166,18 @@ class Operations:
             sock.connect(server_address)
         except socket.timeout:
             print('Error de conexion')
-            
+        
         try:
-            
+            #Creacion de instacia de la clase GUI
+            myGUI = GUI.MyGUI()
             # Envio del mensaje (000EAR02 - Envio continuo de información de escaneo)
             message = [bytes([2]),chr(48),chr(48),chr(48),chr(69),chr(65),chr(82),chr(48),chr(50),binascii.unhexlify(b"00"),binascii.unhexlify(b"83"),bytes([3])]
             b = bytearray()
             b.extend(map(ord, message))
             print (sys.stderr, 'sending "%s"' % b)
             sock.send(b)
+            
+
         
             # Se recoge la respuesta (En este caso la información de lectura del láser)
             """num_sens=2
@@ -162,58 +188,43 @@ class Operations:
             datosFinales=list()
             exit = False
             		
-            def on_Press(self, key):
-                global exit
-                if (key == keyboard.Key.end):
-                    print("Finalizando bucle")
-                    exit = False
-                    return False
-            with keyboard.Listener(on_Press = on_Press) as listener:
+            
                 
-                num_sens=2
+            num_sens=2
+            amount_received = 0
+            amount_expected = 4500*num_sens
+            iteration = 0
+                
+            while not exit:
+                iteration+=1
+                
+                sens=""
+                while amount_received < amount_expected:
+                    data = sock.recv(32)
+                    sens+= data.decode('utf-8')
+                    amount_received += len(data)
+    
                 amount_received = 0
-                amount_expected = 4500*num_sens
-                iteration = 0
-                
-                while not exit:
-                    iteration+=1
-                           
-                    sens=""
-                    while amount_received < amount_expected:
-                        data = sock.recv(32)
-                        sens+= data.decode('utf-8')
-                        amount_received += len(data)
+    
+            	# Se separa los datos del resto de información enviada por el laser
+                datos_lectura=re.split('\x02|\x03',sens)
+                #print(len(datos_lectura))
+    
+            	#Eliminamos las divisiones inecesarias (ya que se producen divisiones vacias)
+                for e in datos_lectura:
+                    if(len(e)<50):
+                        datos_lectura.remove(e)
         
-                    amount_received = 0
-        
-            		# Se separa los datos del resto de información enviada por el laser
-                    datos_lectura=re.split('\x02|\x03',sens)
-                    #print(len(datos_lectura))
-        
-            		#Eliminamos las divisiones inecesarias (ya que se producen divisiones vacias)
-                    for e in datos_lectura:
-                        if(len(e)<50):
-                            datos_lectura.remove(e)
+            	#Escogemos como dato el primero de los grupos de datos y retiramos los datos correspondientes a información innecesaria.
+                target=datos_lectura[1][97:]
             
-            		#Escogemos como dato el primero de los grupos de datos y retiramos los datos correspondientes a información innecesaria.
-                    target=datos_lectura[1][97:]
-        
-
-                    if(iteration % 5 == 0):
+                datosFinales.append(list(self.procesadoYMuestra(target)))
+                #if(iteration == 1):
+                    #myGUI.start(myGUI.animate)
+    
+    
                         
-                        datosFinales.append(self.procesadoYMuestra(target,True))
-                    else:
-                        datosFinales.append(self.procesadoYMuestra(target,False))
-        
-                    
-                    
-                listener.join()
                 
-                
-                
-        	
-            
-        
         finally:
             print (sys.stderr, 'closing socket')
             messagecierre = [bytes([2]),chr(48),chr(48),chr(48),chr(69),chr(65),chr(82),chr(48),chr(51),binascii.unhexlify(b"89"),binascii.unhexlify(b"92"),bytes([3])]
@@ -229,6 +240,7 @@ class Operations:
     
 
 if __name__ == '__main__':
+
     obj = Operations()
     obj.mainFunction()
     

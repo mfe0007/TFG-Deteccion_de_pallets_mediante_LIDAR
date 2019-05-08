@@ -1,3 +1,67 @@
 \capitulo{6}{Trabajos relacionados}
 
-Este apartado sería parecido a un estado del arte de una tesis o tesina. En un trabajo final grado no parece obligada su presencia, aunque se puede dejar a juicio del tutor el incluir un pequeño resumen comentado de los trabajos y proyectos ya realizados en el campo del proyecto en curso. 
+En este apartado del proyecto se ha realizado una labor de investigación en el campo de los AGV's y la detección de objetos, profundizando en la detección de palets.
+Existen múltiples aproximaciones a este problema, en las que se usa una variedad de técnicas y sensores para intentar resolver la problemática.
+
+\section{Artículos científicos}
+
+\subsection{Detection, localisation and tracking of pallets using machine
+learning techniques and 2D range data}
+En 2018, los autores Ihab S. Mohamed, Alessio Capitanelli, Fulvio Mastrogiovanni, Stefano Rovetta y Renato Zaccaria publicaron este estudio en el cual presentan una arquitectura capaz de dotar a un AGV, mediante un sensor láser de tipo LIDAR similar al utilizado en el proyecto, de mantener un conteo de palets detectados, asi como su posición.
+La arquitectura se divide en dos componentes:
+\begin{itemize}
+\item En primer lugar, un detector de palets que utiliza una red neuronal convolucional basado en zonas (Region-based convolutional neural network), en cascada con un clasificador.
+\item En segundo lugar, se utiliza un fltro Kalman para rastrear los palets ya detectados.
+
+\subsection{Robust Pallet Detection for Automated Logistics Operations}
+En este documento publicado en 2016 por Robert Varga y Sergiu Nedevschi, se estudian las alternativas ya existentes para la visión artificial de los AVG's y se proponen soluciones para mejorarlas.
+Se utilizan para la detección imagenes captadas por una cámara estereoscópica y imagenes en escala de grises. Estas últimas proporcionan la información de la localización del palet en 2D mientras que las primeras se usan para conocer la posición 3D y la ortientación del palet respecto de la cámara.
+Emplean un algoritmo compuesto de detección de bordes y líneas de los palets, para después generar posibles candidatos a ser considerados un palet, y probarlos contra las características ya conocidas. Por último, se usa un clasificador para confirmar si se trata o no de una detección positiva.
+
+\subsection{Focus based Feature Extraction for Pallets Recognition}
+En este estudio realizado por Rita Cucchiara, Massimo Piccardi y Andrea Prati se utiliza una cámara estandar para extraer características de un palet sobre la imagen que se esta capturando, concretamente se buscan las patas laterales y la pata central del palet mediante el procesado de líneas y bordes, después de haber definido una región de ineterés (ROI). Posteriormente mediante un arbol de decisión se confirma si es o no un palet lo que se esta viendo.
+
+\subsection{Visualization of Pallets}
+Roger Bostelman, Tsai Hong y Tommy Chang publicaron este estudio en 2006 en el que utilizan dos sensores de tipo LIDAR, uno en la base del AGV y otro en las 'palas'.
+Este estudio se especializa en la detección de palets dentro de un camión, de modo que usan las paredas laterales y la pared del fondo del camión para conocer la posición del palet.
+El algoritmo utilizado realiza los siguientes pasos:
+\begin{enumerate}
+\item Se convierten los datos obtenidos en plano cartesiano X Y
+\item El sistema estima la localización de las cuatro esquinas del camión. (x1, y1), (x2, y2), (x3, y3), (x4, y4).
+\item Se aplica la transformada de Hough a los puntos.
+\item Encuentra las líneas que delimitan el camión a ambos lados y el fondo.
+\item Si alguna de las paredes del camión concuerda con las predicciones, la distancia desde el centro del sensor a esta pared se sobreescribe.
+\item Se calcula la distancia hacia cada una de las tres paredes de los puntos que están dentro de los límites predichos.
+\item Se agrupan los puntos cuya distancia a la pared izquierda es menor a la pared contraria como el palet izquierdo y viceversa.
+\item Se calcula la distancia mínima del sensor a cada uno de los palets encontrados.
+\end{enumerate}
+
+ \subsection{Pallet recognition and localization using an RGB-D camera}
+Autores: Junhao Xiao, Huimin Lu, Lilian Zhang y Jianhua Zhang.
+En este estudio se untiliza una cámara RGB, concretamente la Kinect 2.0 de Microsoft.
+En primer lugar el algoritmo realiza un segmentado de las imágenes y filtrado, para después compararlas con muestras de palets.
+
+\subsection{Automatic visual guidance of a forklift engaging a pallet}
+En este estudio, Michael Seelingera, y John-David Yoderb usan dos cámaras estándar para capturar imágenes en escala de grises.
+No obstante, también hacen uso de marcas visuales tanto en el propio AGV como en los palets, y aún siendo un sistema igualmente válido, posee la desventaja de tener que equipar todos los palets del almacen o fábrica con dichas marcas. Puesto que en el ámbito del transporte de mercancias los palets 'viajan' mucho entre la industria, es uan tarea demasiado laboriosa mantener todos los palets que pasan por un almacen o fábrica con las marcas necesarias.
+
+\subsection{Pallet Pose Estimation with LIDAR and Vision for Autonomous Forklifts}
+Los autores de este estudio (N. Bellomo, E. Marcuzzi, L. Baglivo, M. Pertile, E. Bertolazzi y M. De Cecco) proponen un método de reconocimiento de palets que extrae los datos de un sensor de tipo LIDAR, y utiliza un algortimo genético de optimización para encontrar la mejor coincidencia entre la imagen que se esta recibiendo, y un modelo existente de un palet conocido.
+
+\subsection{Feature-to-Feature based Laser Scan Matching in Polar Coordinates with Application to Pallet Recognition}
+Este artículo publicado en 2011 por Zhendong Hea, Yaonan Wanga y Hong Yuc hace uso de un sensor de tipo LIDAR para recoger la información del entorno.
+Después, su algoritmo emplea segmentación y clustering sobre los puntos recibidos por el LIDAR, detección de las esquinas del palet y finalmente lo compara con un modelo de palet conocido para concluir si se trata de un palet.
+
+\subsection{Docking to Pallets with Feedback from a Sheet-of-Light Range Camera
+}
+Los autores J. Nygirds, T. Hogstrom y A. Wernersson presentan en este estudio un algoritmomas que para el reconocimiento de palets, para la correcta inserción de las palas del AGV una vez es conocida ya la existencia del palet. Hace uso de dos tipos de cámaras: una cámara estándar, y otra de tipo 'sheet of light' (Se trata de una cámara que recoge la reflexion de un haz de luz proyectado para así conseguir una imagen en tres dimensiones.
+Se compone de los siguientes pasos:
+\begin{enumerate}
+
+\item Se define una región de interés (ROI) en base a la predicción del palet en la imagen.
+\item Haciendo uso de la transformada de Radon se detecta la orientación del palet y la distancia al mismo.
+\item Buscando los intervalos en los que los valores de intensidad del láser son mayores, se determina cual es la pata central del palet.
+\item Se transforman las distancias de los puntos obtenidas a coordenadas para el AGV.
+\end{enumerate}
+
+
