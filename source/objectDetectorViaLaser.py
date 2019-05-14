@@ -85,17 +85,18 @@ class Operations:
         datosSeparados.pop(-1)
         
         #Pasamos cada elemento del anteior array de hexadecimal a decimal
-        final=Operations.toDecimal(datosSeparados)
+        distancias_puntos=Operations.toDecimal(datosSeparados)
         
         #Creamos la lista con ángulos
         angulos=list(Operations.creaangulos(-45,225,270/1081))
         
         #Creamos una lista de puntos con coordenadas polares
         listaPolares=list()
-        for i in range(len(final)):
-            #if(int(final[i])<40000):
-            p=Punto(int(final[i]),angulos[i])
-            listaPolares.append(p)
+        for i in range(len(distancias_puntos)):
+            #Si el valor de la distancia es mayor de 40000 representa un error de lectura del laser, por lo tanto lo descartamos
+            if(int(distancias_puntos[i])<40000):
+                p=Punto(int(distancias_puntos[i]),angulos[i])
+                listaPolares.append(p)
         
         #Pasamos las coordenadas de cada punto de polares a cartesianas
         listaCartesianos=list()
@@ -117,14 +118,17 @@ class Operations:
         #Creacion de archivo para mantener el grafico actualizado
         #file = open("plotdata.txt","a+")
         
+        #Transformamos los puntos a un formato adecuado para DBSCAN
         points = list()
         for x,y in zip(coorXgrafico,coorYgrafico):
             points.append(list((x,y)))
         
       
-        
+        #Parametros del algoritmo
         clustering = DBSCAN(algorithm = 'auto')
+        #Aplicacion del algoritmo
         model = clustering.fit(points)
+        #Numero de grupos que el algoritmo ha detectado
         n_clusters = len(set(model.labels_)) - (1 if -1 in model.labels_ else 0)
         
         #testintg plot
@@ -180,9 +184,6 @@ class Operations:
 
         
             # Se recoge la respuesta (En este caso la información de lectura del láser)
-            """num_sens=2
-            amount_expected = 4500*num_sens
-            """
             sens=""
             amount_received = 0
             datosFinales=list()

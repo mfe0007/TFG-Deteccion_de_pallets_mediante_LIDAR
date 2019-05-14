@@ -65,3 +65,16 @@ Se compone de los siguientes pasos:
 \end{enumerate}
 
 
+\subsection{Vision-based autonomous load handling for automated guided vehicles}
+En este estudio de 2014, Robert Varga y Sergiu Nedevschi presentan un método para detectar la existencia de un pallet y estimar su posición y orientación en el espacio.
+Se utilizan dos cámaras posicionadas en el AGV, una entre las palas del AGV que se mueve solidariamente con ellas, y otra en una posicion fija.
+También se dispone de una fuente de luz compuesta por varios leds para garantizar las condiciones de iluminación necesarias.
+Mediante las dos cámaras se generan imágenes en 3D, que posteriormente se tratan con filtros y una ventana deslizante para elegir los candidatos a pallets de la imagen obtenida.
+
+
+\subsection{Real-time Pallet Localization with 3D Camera Technology for Forklifts in Logistic Environments}
+En este estudio, se utiliza una cámara Kinect v2 de Mircrosoft montada en las palas del AGV. Mediante un algoritmo de región creciente (Region growing algorithm) y segmentación de las nubes de puntos que se reciben como entrada, se buscan particularidades que identifican los pallets, concretamente los bloques de las patas, y la superficie que los une. Cuando se detecta un candidato a pallet, se comprueban las medidas que la cámara esta viendo con las medidas reales de un pallet europeo con un pequeño margen de error y así verificar el pallet.
+
+
+
+
