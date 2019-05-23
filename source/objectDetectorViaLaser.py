@@ -116,7 +116,7 @@ class Operations:
         coorYgrafico=np.array(listaCY)
 
         #Creacion de archivo para mantener el grafico actualizado
-        #file = open("plotdata.txt","a+")
+        file = open("plotdata.txt","a+")
         
         #Transformamos los puntos a un formato adecuado para DBSCAN
         points = list()
@@ -132,14 +132,14 @@ class Operations:
         n_clusters = len(set(model.labels_)) - (1 if -1 in model.labels_ else 0)
         
         #testintg plot
-        plt.scatter(*zip(*points))
-        plt.show()
-        time.sleep(1)
+        #plt.scatter(*zip(*points))
+        #plt.show()
+        #time.sleep(1)
 
 
             
-            #file.write(str(x)+","+str(y)+"\n")
-        #file.close()
+        file.write(str(x)+","+str(y)+"\n")
+        file.close()
        
     
         end = time.time()
@@ -220,8 +220,8 @@ class Operations:
                 target=datos_lectura[1][97:]
             
                 datosFinales.append(list(self.procesadoYMuestra(target)))
-                #if(iteration == 1):
-                    #myGUI.start(myGUI.animate)
+                if(iteration == 1):
+                    myGUI.start(myGUI.animate)
     
     
                         

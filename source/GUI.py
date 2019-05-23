@@ -33,7 +33,7 @@ class MyGUI():
                     xs.append(x)
                     ys.append(y)
             self.ax1.clear()
-            self.ax1.plot(xs,ys)
+            self.ax1.plot(xs,ys,linestyle='-')
 
             print("Plotting new data")
         finally:
@@ -43,7 +43,7 @@ class MyGUI():
         fig = plt.figure()
         self.ax1 = fig.add_subplot(1,1,1)
 
-        a = animation.FuncAnimation(fig, function, interval = 1000)
+        a = animation.FuncAnimation(fig, function, interval = 1)
         plt.ioff()
         print("Before plt.show")
         plt.show(block=False)
