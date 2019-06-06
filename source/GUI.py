@@ -18,36 +18,33 @@ class MyGUI():
         
         
     
-    def animate(self,i):
-        try:
-            data = open('plotdata.txt','r')
-            #data.read()
-            lines = [line.rstrip('\n') for line in data]
-            #print(lines)
+    def animate(self,i,points):
+        
+           
+        #lines = [line.rstrip('\n') for line in points]
+        #print(lines)
 
-            xs = []
-            ys = []
-            for line in lines:
-                if len(line)>1:
-                    x,y = line.split(',')
-                    xs.append(x)
-                    ys.append(y)
-            self.ax1.clear()
-            self.ax1.plot(xs,ys,linestyle='-')
+        xs = []
+        ys = []
+        for line in points:
+            if len(line)>1:
+                x = line[0]
+                y = line[1]
+                xs.append(x)
+                ys.append(y)
+        self.ax1.clear()
+        # print(len(xs))
+        self.ax1.plot(xs,ys,linestyle='-')
 
-            print("Plotting new data")
-        finally:
-            data.close()
+        print("Plotting new data")
+        
 
-    def start(self,function):
+#pasar datos  funcion animate sin fichero
+    def start(self,function,points):
         fig = plt.figure()
         self.ax1 = fig.add_subplot(1,1,1)
-
-        a = animation.FuncAnimation(fig, function, interval = 1)
-        plt.ioff()
-        print("Before plt.show")
+        a = animation.FuncAnimation(fig, self.animate, fargs=[points], interval = 0.1)
         plt.show(block=False)
-        print("After plt show")
         plt.show()
         
 

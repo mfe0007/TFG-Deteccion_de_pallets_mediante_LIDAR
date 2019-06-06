@@ -9,8 +9,8 @@ from Punto import Punto
 import GUI
 import time
 import numpy as np
-from sklearn.cluster import DBSCAN
-import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.linear_model import RANSACRegressor
 
 
     
@@ -69,11 +69,17 @@ class Operations:
             x += jump
             
             
-
+    def clusterSize(self,c,k):
+        #Metodo que calcula el tamaño de cada cluster en funcion del numero de puntos que comprende
+        cluster_size = np.zeros(k)
+        for point in c:
+            cluster_size[point]+=1
+        return cluster_size
+                
         
         
     
-    def procesadoYMuestra(self,target):
+    def procesadoYMuestra(self,target,flag):
         
         start=time.time()
         """Separamos por el string de datos en partes de longitud 4 (longitud de cada dato).
@@ -112,41 +118,68 @@ class Operations:
         
             
         #Actualizacion del fichero con los datos del grafico
-        coorXgrafico= np.array(listaCX)
-        coorYgrafico=np.array(listaCY)
+        coorXgrafico = np.array(listaCX)
+        coorYgrafico = np.array(listaCY)
 
         #Creacion de archivo para mantener el grafico actualizado
-        file = open("plotdata.txt","a+")
+        file = open("plotdata.txt","w")
         
-        #Transformamos los puntos a un formato adecuado para DBSCAN
+        #Transformamos los puntos a un formato adecuado para el algoritmo K-Means
         points = list()
         for x,y in zip(coorXgrafico,coorYgrafico):
             points.append(list((x,y)))
+            #Log de los datos de cada trama a fichero
+            file.write(str(x)+","+str(y)+"\n")
+            #separador para delimitar las tramas
+            file.write("-----\n")
+        file.close()
+        if(flag):
+            #Creacion de instacia de la clase GUI
+            myGUI = GUI.MyGUI()
+                               
+            myGUI.start(myGUI.animate,points)
+
+            
+        #Nota: red de aprendizaje no supervisada clustering
         
-      
+        #CLUSTERING
         #Parametros del algoritmo
-        clustering = DBSCAN(algorithm = 'auto')
+        clustering = KMeans(n_clusters = 3)
         #Aplicacion del algoritmo
         model = clustering.fit(points)
         #Numero de grupos que el algoritmo ha detectado
-        n_clusters = len(set(model.labels_)) - (1 if -1 in model.labels_ else 0)
+        #clusters = len(set(model.labels_)) - (1 if -1 in model.labels_ else 0)
         
-        #testintg plot
-        #plt.scatter(*zip(*points))
-        #plt.show()
-        #time.sleep(1)
-
-
+        #Si los tres clusters tienen aproximadamente el mismo tamaño continuamos con el proceso
+        #La tolerancia se expresa en el numero de puntos de diferencia entre un cluster y otro
+        tolerance = 15
+        cluster_size = self.clusterSize(model.labels_,3)
+        dif1 = abs(cluster_size[0]-cluster_size[1])
+        dif2 = abs(cluster_size[1]-cluster_size[2])
+        dif3 = abs(cluster_size[0]-cluster_size[2])
+        
+        if((dif1 < tolerance) and (dif2 < tolerance) and (dif3 < tolerance)):
+            #Reconocidas las tres patas del potencial palet
+            #Ahora se buscan las lineas horizontales que unen las tres patas
+            print("Reconocidas 3 patas del palet")
             
-        file.write(str(x)+","+str(y)+"\n")
-        file.close()
+            line = RANSACRegressor(random_state=0).fit(coorXgrafico, coorYgrafico)
+            print(line.score(coorXgrafico, coorYgrafico))
+            
+
+                    
+    
+        
+
+
+        
        
     
         end = time.time()
                     
         print("FPS:",(1/(end-start)))
         
-    
+        time.sleep(.5)
         return listaCartesianos
         
     
@@ -172,8 +205,7 @@ class Operations:
             print('Error de conexion')
         
         try:
-            #Creacion de instacia de la clase GUI
-            myGUI = GUI.MyGUI()
+            
             # Envio del mensaje (000EAR02 - Envio continuo de información de escaneo)
             message = [bytes([2]),chr(48),chr(48),chr(48),chr(69),chr(65),chr(82),chr(48),chr(50),binascii.unhexlify(b"00"),binascii.unhexlify(b"83"),bytes([3])]
             b = bytearray()
@@ -219,9 +251,10 @@ class Operations:
             	#Escogemos como dato el primero de los grupos de datos y retiramos los datos correspondientes a información innecesaria.
                 target=datos_lectura[1][97:]
             
-                datosFinales.append(list(self.procesadoYMuestra(target)))
                 if(iteration == 1):
-                    myGUI.start(myGUI.animate)
+                    datosFinales.append(list(self.procesadoYMuestra(target,True)))
+                else:
+                    datosFinales.append(list(self.procesadoYMuestra(target,False)))
     
     
                         
