@@ -10,7 +10,6 @@ import GUI
 import time
 import numpy as np
 from sklearn.cluster import KMeans
-from sklearn.linear_model import RANSACRegressor
 
 
     
@@ -77,6 +76,36 @@ class Operations:
         return cluster_size
                 
         
+    def findIndex(self,punto,container):
+        
+        #Encuentra la primera ocurrencia del punto en el contenedor y devuelve su posicion
+        j = 0
+
+        ret = None
+        for element in container:
+            if(punto.getX() == element.getX() and punto.getY() == element.getY()):
+                ret = j
+                print("Found")
+                break
+            else:
+                j+=1
+            ret = False
+                
+            
+        return ret
+    
+    
+    def clusterDistances(self,angles,distances):
+        
+        angle0to1 = angles[1]-angles[0]
+        angle1to2 = angles[2]-angles[1]
+        
+        #Aplicando el teorema del coseno
+        distance01 = math.sqrt(math.pow(distances[0],2)+math.pow(distances[1],2)-(distances[0]*distances[1]*math.cos(angle0to1)))
+        distance02 = math.sqrt(math.pow(distances[1],2)+math.pow(distances[2],2)-(distances[1]*distances[2]*math.cos(angle1to2)))
+        
+        return list(distance01,distance02)
+
         
     
     def procesadoYMuestra(self,target,flag):
@@ -152,19 +181,51 @@ class Operations:
         
         #Si los tres clusters tienen aproximadamente el mismo tamaño continuamos con el proceso
         #La tolerancia se expresa en el numero de puntos de diferencia entre un cluster y otro
-        tolerance = 15
+        tolerance = 1500
         cluster_size = self.clusterSize(model.labels_,3)
         dif1 = abs(cluster_size[0]-cluster_size[1])
         dif2 = abs(cluster_size[1]-cluster_size[2])
         dif3 = abs(cluster_size[0]-cluster_size[2])
-        
+
         if((dif1 < tolerance) and (dif2 < tolerance) and (dif3 < tolerance)):
-            #Reconocidas las tres patas del potencial palet
-            #Ahora se buscan las lineas horizontales que unen las tres patas
-            print("Reconocidas 3 patas del palet")
+            #Reconocidos tres clusters de un tamaño similar
+            #Ahora se comprueba que dichos clusters son equidistantes entre si
+            centers = model.cluster_centers_
+            centers_index = list
+            for center in centers:
+
+                p = Punto(center[0],center[1])
+                i = self.findIndex(p,listaCartesianos)
+                #Si no se ha encontrado el indice de los centros, la funcion devuelve False
+                if(isinstance(i, int)):
+                    centers_index.append(i)
+                    
+                    
+            centers_angles = list()
+            centers_distances = list()
+            for index in centers_index:
+                
+                centers_angles.append(angulos[index])
+                centers_distances.append(distancias_puntos[index])
+            #Ahora con los datos de angulos y distancias de los centros calculamos la distancia real que separa los centros de los clusters
             
-            line = RANSACRegressor(random_state=0).fit(coorXgrafico, coorYgrafico)
-            print(line.score(coorXgrafico, coorYgrafico))
+            separation = self.clusterDistances(centers_angles,centers_distances)
+            
+            #Separación de las patas de un palet. Ajustable a diferentes modelos de palet
+            fixed_separation = 1
+            #Tolerancia en la distancia de las patas del palet
+            leg_tolerance = 0
+            
+            
+            
+            if(((abs(separation[0] - fixed_separation)<leg_tolerance) and (abs(separation[1] - fixed_separation)<leg_tolerance))):
+                print("Palet detectado con exito")
+                
+            
+                
+            
+            
+            
             
 
                     
