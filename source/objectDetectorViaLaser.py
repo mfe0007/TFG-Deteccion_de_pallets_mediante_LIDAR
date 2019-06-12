@@ -181,13 +181,13 @@ class Operations:
         
         #Si los tres clusters tienen aproximadamente el mismo tamaño continuamos con el proceso
         #La tolerancia se expresa en el numero de puntos de diferencia entre un cluster y otro
-        tolerance = 1500
+        point_tolerance = 1500
         cluster_size = self.clusterSize(model.labels_,3)
         dif1 = abs(cluster_size[0]-cluster_size[1])
         dif2 = abs(cluster_size[1]-cluster_size[2])
         dif3 = abs(cluster_size[0]-cluster_size[2])
 
-        if((dif1 < tolerance) and (dif2 < tolerance) and (dif3 < tolerance)):
+        if((dif1 < point_tolerance) and (dif2 < point_tolerance) and (dif3 < point_tolerance)):
             #Reconocidos tres clusters de un tamaño similar
             #Ahora se comprueba que dichos clusters son equidistantes entre si
             centers = model.cluster_centers_
@@ -200,16 +200,18 @@ class Operations:
                 if(isinstance(i, int)):
                     centers_index.append(i)
                     
-                    
-            centers_angles = list()
-            centers_distances = list()
+            #Con el centro geometrico de los clusters, que no tiene porque coincidir con ninguna lectura real de los puntos, hallamos las distancias 
+            # entre los clusters teoricos de las patas de los palets
+            
+            theorical_centers_angles = list()
+            theorical_centers_distances = list()
             for index in centers_index:
                 
-                centers_angles.append(angulos[index])
-                centers_distances.append(distancias_puntos[index])
+                theorical_centers_angles.append(angulos[index])
+                theorical_centers_distances.append(distancias_puntos[index])
             #Ahora con los datos de angulos y distancias de los centros calculamos la distancia real que separa los centros de los clusters
             
-            separation = self.clusterDistances(centers_angles,centers_distances)
+            separation = self.clusterDistances(theorical_centers_angles,theorical_centers_distances)
             
             #Separación de las patas de un palet. Ajustable a diferentes modelos de palet
             fixed_separation = 1
