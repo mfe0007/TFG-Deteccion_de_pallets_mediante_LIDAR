@@ -96,6 +96,7 @@ class Operations:
     
     
     def clusterDistances(self,angles,distances):
+        #Calcula las distancias entre los distintos centros geometricos de los clusters teoricos
         
         angle0to1 = angles[1]-angles[0]
         angle1to2 = angles[2]-angles[1]
@@ -106,8 +107,27 @@ class Operations:
         
         return list(distance01,distance02)
 
-        
+    def realClusterDistances(self,model,distances):
+        sum_distances = np.zeros((3,2))
+        mean_distances = np.zeros(3)
+        #Calcula la distancia media que separa a los puntos de cada cluster respecto del LIDAR
+        #en sum_distances se guarda una tupla por cada cluster que se compone de la suma de todas las 
+        #distancias y el numero de elementos que componen el cluster
+        for i in range(0,len(model.labels_)):
+            sum_distances[model.labels_[i]][0]+=float(distances[i])
+            sum_distances[model.labels_[i]][1]+=1
+            
+        for j in range(0,len(sum_distances)):
+            mean_distances[j] = sum_distances[j][0]/sum_distances[j][1]
+        return mean_distances
     
+    
+    #Calcular el angulo medio de todos los puntos de cada cluster
+    #con eso y con la distancia media a todos los puntos de cada cluster, hallar la separacion
+    #entre si de los clusters y compararla con los datos reales del palet
+            
+                        
+            
     def procesadoYMuestra(self,target,flag):
         
         start=time.time()
@@ -191,20 +211,22 @@ class Operations:
             #Reconocidos tres clusters de un tamaño similar
             #Ahora se comprueba que dichos clusters son equidistantes entre si
             centers = model.cluster_centers_
-            centers_index = list
+            centers_index = list()
             for center in centers:
 
                 p = Punto(center[0],center[1])
                 i = self.findIndex(p,listaCartesianos)
+
                 #Si no se ha encontrado el indice de los centros, la funcion devuelve False
-                if(isinstance(i, int)):
+                if(i != False):
                     centers_index.append(i)
                     
             #Con el centro geometrico de los clusters, que no tiene porque coincidir con ninguna lectura real de los puntos, hallamos las distancias 
             # entre los clusters teoricos de las patas de los palets
-            
+            '''
             theorical_centers_angles = list()
             theorical_centers_distances = list()
+            
             for index in centers_index:
                 
                 theorical_centers_angles.append(angulos[index])
@@ -222,6 +244,8 @@ class Operations:
             
             if(((abs(separation[0] - fixed_separation)<leg_tolerance) and (abs(separation[1] - fixed_separation)<leg_tolerance))):
                 print("Palet detectado con exito")
+            '''
+            print(self.realClusterDistances(model,distancias_puntos))
                 
             
                 
