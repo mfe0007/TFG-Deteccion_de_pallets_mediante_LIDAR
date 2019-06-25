@@ -1,7 +1,63 @@
 \capitulo{5}{Aspectos relevantes del desarrollo del proyecto}
 
-Este apartado pretende recoger los aspectos más interesantes del desarrollo del proyecto, comentados por los autores del mismo.
-Debe incluir desde la exposición del ciclo de vida utilizado, hasta los detalles de mayor relevancia de las fases de análisis, diseño e implementación.
-Se busca que no sea una mera operación de copiar y pegar diagramas y extractos del código fuente, sino que realmente se justifiquen los caminos de solución que se han tomado, especialmente aquellos que no sean triviales.
-Puede ser el lugar más adecuado para documentar los aspectos más interesantes del diseño y de la implementación, con un mayor hincapié en aspectos tales como el tipo de arquitectura elegido, los índices de las tablas de la base de datos, normalización y desnormalización, distribución en ficheros3, reglas de negocio dentro de las bases de datos (EDVHV GH GDWRV DFWLYDV), aspectos de desarrollo relacionados con el WWW...
-Este apartado, debe convertirse en el resumen de la experiencia práctica del proyecto, y por sí mismo justifica que la memoria se convierta en un documento útil, fuente de referencia para los autores, los tutores y futuros alumnos.
+\section{Conocimientos aplicados en el proyecto}
+
+Son muchos los conocimientos que han sido necesarios de una u otra forma para llevar a cabo este proyecto. Muchos de esos conocimientos se han adquirido a lo largo de las asignaturas de este grado, mientras que otros han sido obtenidos mediante el autoaprendizaje haciendo uso de distintos tipos de recursos \textit{Manuales de programación, tutoriales, documentación online...)}\\
+	
+\subsection{Conocimientos aprendidos dentro del grado}
+	\subsubsection{Programación en Python}
+		Este lenguaje ha sido clave para desarrollar todo el código del proyecto, un lenguaje que se ha ido aprendiendo a lo largo del grado en diversas asignaturas como Sistemas 					Inteligentes, Algoritmia, Nuevas Tecnologías y Empresa y Gestión de la Información.\\
+		Las nociones y conocimientos sobre este lenguaje que se han recibido han servido para poder realizar la parte de programación de este proyecto, así como para facilitar el 					aprendizaje de nuevas librerías y características necesarias para la realización del código.\\
+	\subsubsection{Redes}
+		Para manejar la conexión necesaria con el láser, se han empleado conocimientos sobre redes, concretamente sobre conexiones TCP y sockets. \\ Esto ha sido posible gracias a lo 				aprendido en asignaturas como Redes o Sistemas Distribuidos.\\
+	\subsubsection{Gestión de proyectos}
+		La gestión de proyectos es la parte encargada en el proyecto de planear las tareas a realizar para llegar al objetivo final, adecuando los tiempos, costes tanto humanos como 				materiales y todo lo necesario. \\ Como ya se ha expuesto previamente, se ha utilizado una metodología ágil, SCRUM, la cual además de otros conocimientos necesarios para la 				gestión ha sido aprendida en la asignatura Gestión de Proyectos. También se ha aprendido en esta asignatura el concepto de los tableros KanBan %\citep{wiki:Tableros Kanban}
+		, un método similar a la metodología SCRUM.\\
+Se han seguido desarrollos incrementales mediante sprints de una duración comprendida entre un mes y tres meses en las partes más complejas del proyecto, retrasándose cuando se arrastraban tareas de sprints anteriores por fallos en el código, entre otros contratiempos. Para seguir el desarrollo de los sprints se utilizó la aplicación \href{https://trello.com/}{Trello}.\\
+	\subsubsection{Hardware}
+		El aspecto a nivel de hardware del proyecto comprende  la alimentación electrica del propio láser y la conexión de datos con el mismo.\\
+		Para la alimentación se buscó una fuente de alimentacion de corriente continua, 24v y por lo menos 1A como se especifica en los manuales del equipo láser.
+		En cuanto a la conexión de datos con el láser, fue necesario comprender que función desempeñaba cada cable (\textit{Polo positivo, polo negativo, tierra, reset...})\\
+		Fue en la asignatura Mantenimiento de Equipos Informáticos donde se adquirieron los conocimientos necesarios para operar con el equipo láser y su fuente de alimentación.\\
+
+	
+	\subsection{Conocimientos aprendidos fuera del grado}
+
+
+		\subsubsection{Manejo del equipo láser}
+			Durante el desarrollo del proyecto ha sido necesario comprender cómo funciona el láser a nivel interno, qué distintos comandos usa y cómo funciona el protocolo de 						comunicación para poder operar con él y aprovechar sus funcionalidades\\
+
+		\subsubsection{Investigación del estado del arte}
+			Con el fin de conocer el nivel de desarrollo de este problema a nivel global,  se ha aprendido a la búsqueda de artículos científicos en diversas plataformas como son \href{https://www.researchgate.net/}{ResearchGate}, \href{https://scholar.google.es/}{Google Scholar} y \href {https://ieeexplore.ieee.org/Xplore/home.jsp}{IEE Explore} entre otros.\\
+Se ha adquirido la capacidad de filtrado a la hora de decidir qué artículos representaban información relevante para el proyecto y cuales no, así como la capacidad de sintetizar el contenido de los artículos para conocer otras alternativas y aproximaciones al problema de reconocimiento de palets.\\
+
+\imagen{ejemploscholar}{Ejemplo de búsqueda en Google Scholar}
+
+
+			
+			
+
+\section{Desarrollo del algoritmo de detección}
+		Buena parte del esfuerzo del proyecto se dedicó al desarrollo y programación del algoritmo para la detección de los palets.\\
+		Se empezó por documentarse sobre otras soluciones al problema de detección y una clasificación de las mismas. Se encontraron multitud de artículos sobre el problema con diversas aproximaciones. \\ Posteriormente, basándose en el equipo láser disponible y su forma de capturar los datos en una nube de puntos 3D, se estudió la mejor colocación posible de cara a su potencial incorporación a un AGV. Se llegó a la conclusión de que la mejor perspectiva para observar el palet era a ras de suelo, montado sobre las propias palas del AGV de manera que el palet quede en el mismo plano que el láser. \\
+\imagen{montajelaser}{Punto óptimo de instalación del sensor láser en un AGV}
+
+		Se optó por desarrollar el algoritmo en el lenguaje Python en contraposición a Java en base a su mejor adecuación para aplicaciones en tiempo real, por su amplio uso y soporte y por ser un lenguaje ampliamente usado durante el grado y así poder aplicar los conocimientos aprendidos.\\
+
+		El algoritmo de desarrollo mediante prueba y error, añadiendo pequeños incrementos de funcionalidad a lo largo del desarrollo, como podían ser añadir nuevas comprobaciones a la hora de la detección o hacer las que ya estaban implementadas más robustas.\\
+
+		Han sido varias las alternativas al algoritmo que se han estudiado, pero finalmente, optando por la simplicidad y dejando abierto el desarrollo de mejoras en la detección, se optó por un camino en el que la detección se basa en el reconocimiento del frontal del palet mediante las patas del mismo, y la distancia que las separa.\\
+En la siguiente imagen se pueden observar desde un plano cenital las tres patas del palet, situadas aproximadamente a un metro del láser.
+
+\imagen{tramapalet}{Trama de datos en la que se puede identificar visualmente las patas del palet detectado}
+
+
+
+\section{Desarrollo del apartado gráfico}
+
+		Inicialmente, se comenzó con la implementación de una interfaz gráfica en \href{https://docs.python.org/2/library/tkinter.html}{TKinter}
+, pero la necesidad de aprender e investigar sobre esta librería de Python y varios problemas de funcionamiento causaron el cambio a otras librerias más sencillas.\\
+Posteriormente, con el fin de poder observar de una manera sencilla pero a la vez suficientemente detallada los datos en tiempo real que transmite el láser, se ha utilizó en lugar de TKinter, las animaciones de la biblioteca \href{https://matplotlib.org/}{matplotlib}.Tras varios problemas de implementación que causaban que la gráfica no se refrescara, se consiguió solucionar el funcionamiento.\\ De esta manera el usuario puede observar en tiempo real las tramas que el láser está procesando, junto con la confirmación de palet en la trama actual. 
+
+
+

@@ -1,6 +1,89 @@
 \capitulo{3}{Conceptos teóricos}
 
-En este apartado de la memoria se proceden a describir todos los conceptos y conocimientos necesarios para la realización del mismo. Parte de esos conocimientos se han adquirido en el grado, mientras que otros se han ido descubriendo a la par que la realización del proyecto.
+La parte del algoritmo más compleja reside en el propio algoritmo de detección de palets y en el tratamiento de los datos recibidos desde el láser.
+El flujo del programa se compone de los siguientes pasos:
+\begin{itemize}
+	\item Preprocesadode los datos: \\
+	\begin{enumerate}
+		\item Primero se establece una conexión con el LIDAR, mediante TCP.
+		\item Posteriormente se tratan los datos para su interpretación en el algotimo detector.
+	\end{enumerate}
+	\item Algoritmo detector de palet: \\
+	\begin{enumerate}
+		\item Se selecciona un área de interes donde se conoce previamente que puede estar el palet.
+		\item Sobre la nube de puntos ya acotada se realiza un clustering con el algoritmo KMEANS.
+		\item Se calculan las distancias entre los diferentes clusters y al emisor, para contrastarlas con las medidas reales del tipo de palet que se esté utilizando y validar así la ocurrencia del palet.
+
+	\end{enumerate}
+	\end{itemize}
+
+\newpage
+\section{Preprocesado de los datos}
+
+Las tramas que se reciben del láser tienen en su interior información que no nos interesa para el fin del proyecto, como es el estado del mismo, datos de control etc. con lo cual se criban los datos descartando información innecesaria.\\
+
+
+Posteriormente, ya que el LIDAR utilizado trabaja en datos hexadecimales, para poder procesarlos, se debe realizar una traducción de los mismos a formato decimal.\\
+La traducción se realiza de la siguiente manera:\\
+	\subsection{Traducción}
+
+	Una vez extraidos los datos de cada apartado de la cadena devuelta por el láser, estos deben ser traducidos en base a los 			siguientes pasos:
+	\begin{enumerate}
+		\item Se extrae uno por uno el dato en hexadecimal de los caracteres.
+		\item Si este dato está comprendido entre $30_{h}$ y  $39_{h}$, se le resta  $30_{h}$. Mientras que si está entre  				$41_{h}$ y  $46_{h}$, se le resta $37_{h}$.
+		\item Se convierte cada dato hexadecimal a binario.
+		\item Se agrupan todos los datos en binario y se traduce la agrupación a decimal para expresar el dato en milímetros.
+	\end{enumerate}
+	\imagen{traduccion}{Traducción de los datos hexadecimal-decimal}
+	
+	Después, por cada dato traducido, se asigna a cada uno un ángulo correspondiente para expresar así la lectura en coordenadas		polares.\\
+	Posteriormente, se traducen los datos de coordenadas polares a coordenadas cartesianas mediante la siguiente formula:
+
+	x = r * cos(\(\theta\))\\
+	y = r * sin(\(\theta\))\\
+
+	Ahora ya se dispone de una lista de distancia y angulo, adecuada para poder ser representada en una gráfica y tratada en el algoritmo detector.\\
+
+
+\section{Algoritmo de detección}
+
+	\subsection{Clustering}
+	El \emph{clustering} o \emph{algoritmo de agrupamiento} es un proceso por el cual se agrupan una serie de vectores en función de algun criterio %\citep{wiki:clustering} .\\ 
+Los criterios generalmente corresponden a cercanía o similitud entre los datos de los vectores.\\
+En este caso particular se utiliza la función de distancia euclídea para el agrupamiento de los puntos de la nube, formando así grupos de puntos en función de su cercanía en el espacio.\\
+
+		\subsection{K-Means}
+		\emph{K-Means} o \emph{K-Medias} es un algoritmo de clustering que particiona \textit{n} datos en \textit{k} grupos.\\
+Cada punto es agrupado en el conjunto cuyo valor medio es más próximo al del punto.
+		\imagen{kmeans}{Algoritmo K-Means}
+		Para comenzar, el algoritmo asigna \textit{k} centros aleatorios y realiza las agrupaciones en función de la distancia de los puntos a esos centros.\\
+Después se actualizan los nuevos centros como el centro de cada cluster que se ha calculado.\\
+
+		El algorimo es de carácter iterativo, ejecutándose varias veces hasta que la solución converge (Las soluciones de cada iteración no cambian) \\ ºº\\%\citep{wiki:kmeans} .\\ \\
+
+Se ejecuta el algoritmo K-means con k=3, puesto que la característica por la que se está intentando identificar el palet es por sus tres patas frontales, las cuales el láser va a observar de manera frontal, al ir este montado en la parte de las palas del AGV. \\
+Una vez agrupados los puntos que corresponden a cada pata,se comprueba que el número de cada cluster tiene un tamaño similar al resto (por motivos de ruido en las lecturas del láser, se aplica un margen de error especificado en el código).Concretamente se compararn el número de puntos que componen a cada cluster.\\ \\
+Posteriormente, se calcula la distancia media a todos los puntos de cada cluster desde el emisor (en este caso el láser) así como el ángulo medio de los puntos de cada cluster.\\
+Con esto conseguimos representar cada cluster por un punto (ángulo y distancia).\\
+Ahora, mediante el teorema del coseno, y con los datos de distancia y ángulo de cada punto representande de los cluster, se calcula la distancia que separa a estos tres puntos.\\
+
+\imagen{tcoseno}{Regla del coseno}
+
+ Estos datos se contrastan con las medidas reales del tipo de palet que se esté utilizando. También se contrastan entre ellos para comprobar que ambas distancias son iguales, de nuevo con una tolerancia por los posibles errores de lectura.\\
+
+\imagen{europaletmedidas}{Medidas de un palet de tipo europeo}
+
+
+Una vez realizadas todas estas comprobaciones, se puede concluir la existencia de un palet.
+
+
+		
+
+
+
+
+
+
 
 
 
@@ -11,6 +94,7 @@ Se ha usado el siguiente hardware para la realización del proyecto:
 	\item Sensor Láser: Encargado de sondear el entorno y devolver los datos obtenidos. El láser que se va a utilizar es de tipo LIDAR (Laser Imaging Detector And Ranging).
 Este tipo de láser emite ondas infrarrojas, para despues recoger las ondas de vuelta, y en función del tiempo entre la emisión y la recepción calcula la distancia.
 En este proyecto, se ha utilizado el láser Hokuyo Safety Laser Scanner (UAM-05LP-T301), capaz de distinguir tres zonas independientes de detección en función de la distancia a la que se encuentren los objetos en el entorno.
+\imagen{hokuyo}{Sensor láser Hokuyo utilziado en el proyecto}
 	\item Cable ethernet: A través de este cable se envian y reciben datos del láser al ordenador. Se usará un UAM-NET, un cable Ethrernet de 3 metros de longitud desarrollado por Hokuyo, misma empresa desarrolladora del láser empleado, lo que hace que resulte idóneo para evitar problemas de incompatibilidad y asegurar así el correcto funcionamiento del sistema.
 	\item Ordenador: Es la parte central del proyecto. Con él, se ejecuta el sistema software encargado de procesar los datos que recibe de la unidad láser, y mediante una serie de algortimos, concluir la detección o no de un palet en el área visionada.
 \end{itemize}
@@ -28,6 +112,13 @@ Existen 6 comandos de este tipo.
 	\item AR03: Detiene la continuidad del comando AR02.
 	\item AR04: Medición contínua en la que devuelve las distancias en intensidades.
 	\item AR05: Detiene la continuidad del comando AR04.
+\end{enumerate}
+
+\subsection{Funcionamiento a nivel interno del láser}
+				Este láser en concreto, escanea un ángulo de 270º mediante un cabezal rotativo que gira 2000rpm emisor de ondas infrarrojas.%\citep{hokuyo:data specification} 
+\\ El láser lanza 1081 haces  a lo largo de los 270º de visión de los que posee, mientras la unidad receptora recoge la reflexión de cada uno de esos haces en los objetos del entorno. Así, calcula el tiempo que ha tardado cada emisión en retornar y, sabiendo la velocidad a la que se propagan los haces, computa la distancia a la que se encuetra cada punto.\\
+En este apartado cabe destacar los problemas que surgieron derivados del amplio rango de captura del láser, puesto que su funcionalidad principal es la de escaner de seguridad y no de medición. Al tener un rango tan grande, en las capturas efectuadas existia mucho ruido del entorno que dificultaba la correcta identificación del palet, con lo cual se optó por limitar el rango con el que se trabajaba a nivel de código para así focalizar la atención del algoritmo en la parte frontal del láser.\\
+			
 
 
 \subsection{Tránsito de mensajes}
@@ -43,23 +134,6 @@ Una vez determinado el comando que se quiere utilizar, se debe crear una estruct
 
 En los mensajes devueltos por el láser al pedirle información de una lectura mediante un comando, se encuentra información como el tiempo empleado para la lectura, estado de los puertos etc que no tiene utilidad en este proyecto. Es por esto que debe ser llevado a cabo un proceso de traducción para extraer la información que nos interesa de las tramas que nos devuelve el láser de las lecturas.
 
-\subsection{Traducción}
-
-Una vez extraidos los datos de cada apartado de la cadena devuelta por el láser, estos deben ser traducidos en base a los siguientes pasos:
-\begin{enumerate}
-	\item Se extrae uno por uno el dato en hexadecimal de los caracteres.
-	\item Si este dato está comprendido entre $30_{h}$ y  $39_{h}$, se le resta  $30_{h}$. Mientras que si está entre  $41_{h}$ y  $46_{h}$, se le resta $37_{h}$.
-	\item Se convierte cada dato hexadecimal a binario.
-	\item Se agrupan todos los datos en binario y se traduce la agrupación a decimal para expresar el dato en milímetros.
-\end{enumerate}
-
-Después, por cada dato traducido, se asigna a cada uno un ángulo correspondiente para expresar así la lectura en coordenadas polares.
-Posteriormente, se traducen los datos de coordenadas polares a coordenadas cartesianas mediante la siguiente formula:
-
-x = r * cos(\(\theta\))\\
-y = r * sin(\(\theta\))\\
-
-Ahora ya se dispone de una lista de distancia y angulo, adecuada para poder ser representada en una gráfica.
 
 
-\subsection
+

@@ -1,16 +1,25 @@
 \capitulo{4}{Técnicas y herramientas}
 
-Esta parte de la memoria tiene como objetivo presentar las técnicas metodológicas y las herramientas de desarrollo que se han utilizado para llevar a cabo el proyecto. 
-
 
 \section{Herramientas para el desarrollo de la memoria}
-Para el desarrollo de la memoria del proyecto se ha usado LaTex como procesador de textos, principalmente por su libertad y simplicidad a la hora de manipular los distintos parametros del documento. Además, desde LaTex se puede exportar directamente el archivo a PDF de una manera muy sencilla.
+
+\subsection{LaTex}
+Para el desarrollo de la memoria del proyecto se ha usado LaTex como procesador de textos, principalmente por su libertad y simplicidad a la hora de manipular los distintos parametros del documento. Además, desde LaTex se puede exportar directamente el archivo a PDF de una manera muy sencilla.\\
 Como desventaja de este programa, cabe destacar el aprendizaje necesario al no haberlo utilizado antes a lo largo del grado en contraposición a la facilidad de haber utilizado un procesador de textos en el que tuviera más experiencia como por ejemplo Microsoft Word u Open Office.
+\subsection{Tables Generator - Herramienta Online}
+Se ha utilizado esta herramienta disponible \href{https://www.tablesgenerator.com/latex_tables#}{online} para transformar las tablas de la memoria a formato LaTex. \\
+Esto nos da la libertad de poder generar inicialmente las tablas con cualquier hoja de cálculo como \emph{Excel} del paquete Office de Microsoft o \emph{Calc} del paquete OpenOffice de Apache y transformar después la tabla cómodamente para incluirla en los documentos LaTex.
 
 \section{Herramientas para el desarrollo y pruebas del código}
 
 \subsection{Realterm}
-Este programa se ha utilizado para la conexión con el dispositivo láser. Su funcionamiento se resume en un programa para tramsmitir mensajes TCP a través del puerto serie. Así, a través de esta conexión, establecemos una via de comunicación con el láser de tipo Cliente-Servidor.
+Este programa se ha utilizado para la conexión con el dispositivo láser. Su funcionamiento se resume en un programa para tramsmitir mensajes TCP a través del puerto serie. Así, a través de esta conexión, establecemos una via de comunicación con el láser de tipo Cliente-Servidor para realizar labores de pruebas.
+
+\subsection{IDE - Spyder}
+Para el desarrollo de código en el lenguaje Python se ha escogido el entorno de desarrollo integrado (IDE) Spyder. \\
+Se ha escogido este programa por ser un entorno de desarrollo potente e interactivo.\\ Entre sus funcionalidades están la depuración, Ipython (Intérprete interactivo de python) y algunas bibliotecas integradas como numPy o matplotlib que han sido de utilidad en el desarrollo de este proyecto. \\
+Para terminar, es un programa muy visual pero sin ser perder por ello funcionalidad y al ser similar a IDEs de otros lenguajes como Eclipse en Java el tiempo de aprendizaje es reducido.\\
+\imagen{capturaspyder}{Instantánea del entorno de desarrollo integrado Spyder}
 
 \section{Metodología}
 \subsection{Scrum}
@@ -23,16 +32,17 @@ Se ha elegindo esta metodología para llevar a cabo el proyecto dado a su facili
 \subsection{Model View Controller (MVC)}
 MVC consta de tres componentes a nivel de software:
 \begin{itemize}
-\item Modelo: Representación de los datos.
-\item Vista: Parte que 'muestra' la información al usuario y se comunica con él. COmunmente una interfaz de usuario.
-\item Controlador: Es la parte encargada de realziar las peticiones al modelo y gestionar los eventos que el usuario genera.
+\item Modelo: Representación de los datos. En este caso los datos proceden directamente de la conexión con el láser.
+\item Vista: Parte que 'muestra' la información al usuario y se comunica con él. Comunmente una interfaz de usuario. Se corresponde con la clase GUI.
+\item Controlador: Es la parte encargada de realziar las peticiones al modelo y gestionar los eventos que el usuario genera. Está integrado en la clase objectDetectorViaLaser.
+\end{itemize}
 
 Es un patrón de diseño adecuado puesto que separa en capas claramente distinguibles y funcionalmente similares el software desarrollado, facilitando el mantenimiento y desarrollo de código.
 \imagen{mvc}{Patrón MVC}
 
 \section{Gestión del repositorio}
 Para la gestión del proyecto y la creación y actualización de un repositorio online, se han barajado dos herramientas: \emph{Github} y \emph{BitBucket}.
-Finalmente se ha optado por usar Github debido a  mayor habituación de uso a lo largo de la carrera en diversas asignaturas.
+Finalmente se ha optado por usar Github debido a la mayor habituación de uso a lo largo de la carrera en diversas asignaturas, partiendo con unos conocimientos que han permitido usar esta herramienta sin necesidad de aprendizaje.
 \subsection{GitHub}
 Github es una plataforma online para el control de versiones, basada en el sistema Git. Integra funcionalidades como documentación, revision de código, gestion de bugs, de tareas etc.
 La herramienta es gratuita para proyectos de código abierto, sin embargo, para crear un repositorio privado es necesaria una suscripción.
@@ -41,10 +51,3 @@ La herramienta es gratuita para proyectos de código abierto, sin embargo, para 
 Existen multitud de herramientas y programas que se pueden utilizar para implementar scrum, como por ejemplo Jira, Trello, QuickScrum etc.
 Por razones de comodidad se ha optado por Trello, dado que es un software que ya se ha usado en la carrera, es intuitivo y su uso es fácil de aprender.
 
-\section{IDE (Entorno de desarrollo Integrado)}
-\subsection{Python}
-
-
-\section{Documentación}
-
-\subsection{LaTex}
