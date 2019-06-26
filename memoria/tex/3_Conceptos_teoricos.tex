@@ -48,7 +48,7 @@ La traducción se realiza de la siguiente manera:\\
 \section{Algoritmo de detección}
 
 	\subsection{Clustering}
-	El \emph{clustering} o \emph{algoritmo de agrupamiento} es un proceso por el cual se agrupan una serie de vectores en función de algun criterio %\citep{wiki:clustering} .\\ 
+	El \emph{clustering} o \emph{algoritmo de agrupamiento} es un proceso por el cual se agrupan una serie de vectores en función de algun criterio \cite{wiki:clustering} .\\ 
 Los criterios generalmente corresponden a cercanía o similitud entre los datos de los vectores.\\
 En este caso particular se utiliza la función de distancia euclídea para el agrupamiento de los puntos de la nube, formando así grupos de puntos en función de su cercanía en el espacio.\\
 
@@ -59,7 +59,7 @@ Cada punto es agrupado en el conjunto cuyo valor medio es más próximo al del p
 		Para comenzar, el algoritmo asigna \textit{k} centros aleatorios y realiza las agrupaciones en función de la distancia de los puntos a esos centros.\\
 Después se actualizan los nuevos centros como el centro de cada cluster que se ha calculado.\\
 
-		El algorimo es de carácter iterativo, ejecutándose varias veces hasta que la solución converge (Las soluciones de cada iteración no cambian) \\ ºº\\%\citep{wiki:kmeans} .\\ \\
+		El algorimo es de carácter iterativo, ejecutándose varias veces hasta que la solución converge (Las soluciones de cada iteración no cambian) \cite{wiki:kmeans} .\\ \\
 
 Se ejecuta el algoritmo K-means con k=3, puesto que la característica por la que se está intentando identificar el palet es por sus tres patas frontales, las cuales el láser va a observar de manera frontal, al ir este montado en la parte de las palas del AGV. \\
 Una vez agrupados los puntos que corresponden a cada pata,se comprueba que el número de cada cluster tiene un tamaño similar al resto (por motivos de ruido en las lecturas del láser, se aplica un margen de error especificado en el código).Concretamente se compararn el número de puntos que componen a cada cluster.\\ \\
@@ -115,7 +115,7 @@ Existen 6 comandos de este tipo.
 \end{enumerate}
 
 \subsection{Funcionamiento a nivel interno del láser}
-				Este láser en concreto, escanea un ángulo de 270º mediante un cabezal rotativo que gira 2000rpm emisor de ondas infrarrojas.%\citep{hokuyo:data specification} 
+				Este láser en concreto, escanea un ángulo de 270º mediante un cabezal rotativo que gira 2000rpm emisor de ondas infrarrojas.\cite{hokuyo:data_specification} 
 \\ El láser lanza 1081 haces  a lo largo de los 270º de visión de los que posee, mientras la unidad receptora recoge la reflexión de cada uno de esos haces en los objetos del entorno. Así, calcula el tiempo que ha tardado cada emisión en retornar y, sabiendo la velocidad a la que se propagan los haces, computa la distancia a la que se encuetra cada punto.\\
 En este apartado cabe destacar los problemas que surgieron derivados del amplio rango de captura del láser, puesto que su funcionalidad principal es la de escaner de seguridad y no de medición. Al tener un rango tan grande, en las capturas efectuadas existia mucho ruido del entorno que dificultaba la correcta identificación del palet, con lo cual se optó por limitar el rango con el que se trabajaba a nivel de código para así focalizar la atención del algoritmo en la parte frontal del láser.\\
 			
