@@ -1,11 +1,42 @@
 \apendice{Especificación de diseño}
 
 \section{Introducción}
+En este anexo se incluyen todos los aspectos de diseño que componen el proyecto. \\ Define los datos que va a utilizar el sistema, el diseño de la arquitectura, etc.
+Se divide en diseño de datos, diseño procedimental y diseño arquitectónico.
+
 
 \section{Diseño de datos}
+La aplicación está compuesta por las siguientes entidades:
+
+\begin{itemize}
+\item \textbf{objectDetectorViaLaser:} En este archivo se encuentra la clase raiz del sistema (clase Operations).\\ En ella se maneja la conexión con el láser, la traducción de los datos y el procesado de los mismos.
+\item \textbf{Punto:}Esta es la clase que codifica los puntos. Las lecturas del láser son creadas como puntos en la etapa de traducción, encapsulando la información mediante las dos coordenadas que representan a un punto en el espacio 2D.
+\item \textbf{DummySV:}Servidor de pruebas para poder usar el programa en momentos de desconexión con el láser.
+\item \textbf{GUI:}Aquí se encuentra la clase encargada del apartado gráfico del sistema (clase MyGUI). 
+\end{itemize}
+
+Los datos que se tratan en todo el programa son coordenadas cartesianas, encapsuladas como ya se ha explicado con la clase Punto, y los ángulos, los cuales se almacenan en una lista.
 
 \section{Diseño procedimental}
+
+El sistema sigue el proceso que se detalla en el siguiente diagrama de secuencia:\\
+\imagen{diagramadesecuencia}{Diagrama de secuencia de la ejecución del programa}
+
+El usuario final se encarga de lanzar el programa el cual después de eso no necesita ninguna otra intervención por parte del usuario.
+
 
 \section{Diseño arquitectónico}
 
 
+El diseño arquitectónico del proyecto es sencillo al tener como objetivo crear un proceso por el cual se transforman las lecturas del láser en un veredicto sobre la existencia de un palet, por lo tanto, no se ha necesitado hacer uso de interfaces, jerarquías de herencia u otros métodos.\\
+Se sigue un diseño como ya se ha explicado en la memoria utilizando un patron MVC modelo vista controlador \cite{wiki:mvc}.
+Se decidió que era un modelo bastante apropiado al sistema que se iba a diseñar, pudiendo separar el programa en las tres capas claramente diferenciadas:\\
+\begin{itemize}
+\item Modelo: Clase punto que codifica las coordenadas de los puntos que transmite el láser.
+\item Vista: Clase MyGUI encargada de encapsular todo lo relacionado con la impresión de las gráficas.
+\item Controlador: Clase Operations delegada de todos los procesos de conexión, traducción y transformación de los datos.
+\end{itemize}
+
+\imagen{diagramadeclases}{Diagrama de clases del sistema}
+
+Existe la clase como ya se ha visto DummySV a parte de las representadas en el diagrama que se usa para realizar pruebas.

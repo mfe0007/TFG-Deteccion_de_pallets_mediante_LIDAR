@@ -1,11 +1,101 @@
 \apendice{Documentación técnica de programación}
 
 \section{Introducción}
+En este anexo se explica los pasos necesarios para poder modificar el código de cara a futuros programadores.\\
+
+
+Este proyecto está disponible en GitHub \href{https://github.com/mfe0007/TFG-Deteccion_de_pallets_mediante_LIDAR}{aquí}.\\
 
 \section{Estructura de directorios}
+La estructura de directorios es bastante sencilla y se desglosa a continuación:\\
+
+\begin{itemize}
+	\item memoria:En este directorio se encuentran todos los archivos e imagenes que comforman la memoria y sus anexos.
+	\item source: Carpeta donde se encuentra el código fuente. Los archivos están codificados en Python y representan la versión final del código.
+	\item diagramas: Como su nombre indica, aquí se guardan los diagramas que se han utilizado para desarrollar el proyecto.
+	\item Drivers: Contiene el driver utilizado para la conexión con el láser vía USB.
+	\item Manuales del equipo laser: Directorio que alberga los manuales de uso y escificaciones del laser y su conexión que se han usado para comprender su funcionamiento.
+\end{itemize}
+
+
 
 \section{Manual del programador}
+En este apartado se explican los pasos a seguir para desplegar el entorno de desarrollo del proyecto y su configuración.
+
+\subsection{Python}
+Se debe descargar el lenguaje de programación python desde su \href{https://www.python.org/downloads/release/python-363/}{página web}.\\
+Se ha utilizado la última versión disponible hasta la fecha, la 3.6.3.\\
+
+
+Una vez se tiene instalado el lenguaje, se procede a descargar las librerías que se utilizan a lo largo del proyecto en el caso de ejecución desde línea de comandos, puesto que en el IDE Spyder vienen instaladas por defecto.\\
+Haciendo uso de los siguientes comandos se pueden instalar las diferentes librerías:\\
+\begin{itemize}
+	\item pip install matplotlib
+	\item pip install sklearn
+	\item pip install numpy
+\end{itemize}
+
+
+\subsection{IDE}
+Con el fin de modificar y depurar el código de una manera más sencilla e intuitiva, se puede descargar un IDE que nos ayude con estas tareas. El IDE escogido para el desarrollo del proyecto por razones ya explicadas en el apartado 3 de la memoria es Spyder\\
+\\
+Para descargar Spyder instalamos la aplicación de Anaconda Navigator, la cual incorpora a ambos contenedora del IDE Spyder \href{https://anaconda.org/anaconda/anaconda-navigator}{aquí} \\
+
+
+\subsection{Git}
+El control de versiones del proyecto se ha realizado con este sistema. Aunque no se ha utilizado en el desarrollo mediante la línea de conmandos, para poder usarlo de este modo se requiere su instalación. La descarga se puede realizar desde la siguiente \href{https://git-scm.com/}{URL}\\
+
+
+\subsection{GitHub Desktop}
+Se ha elegido este cliente de Git desde el que se han realizado las subidas al repositorio. Es un entorno fácil de aprender y suficiente para los cometidos del proyecto. Se descarga desde su \href{https://desktop.github.com/}{página web}
+\\
+Una vez instalado, nos logueamos con nuestra cuenta de GitHub y clonamos el proyecto en nuestro ordenador.\\ Esto se puede realizar de varias maneras:\\
+Introduciendo el enlace del repositorio en nuestro cliente de GitHub, lo cual luego nos permitirá clonarlo eligiendo un directorio donde queremos que se copie.
+Primero hacemos click en 'File'
+\imagen{paso1}{Menú 'File'}
+Después en 'clone repository'
+\imagen{paso2}{'Clone Repository'}
+Y por último vamos a la pestaña URL, copiamos el enlace del repositorio y elegimos la ubicación para que sea clonado.
+\imagen{paso3}{URL del repositorio a clonar}
+
+La otra forma es descargando el repositorio desde la página web de GitHub y seleccionando la opción en el cliente 'Add local repository' como se ve en las siguientes imagenes.\\
+\imagen{paso11}{Descarga del repositorio}
+\imagen{paso12}{Búsqueda del directorio}
+
+
+Después de realizar cualquiera de estos dos pasos ya es posible el uso del proyecto.\\
+
 
 \section{Compilación, instalación y ejecución del proyecto}
+Una vez se han realizado los pasos anteriores, ya podemos compilar y ejecutar el proyecto, puesto que no es necesaria la instalación de ningun paquete ni dependencia del propio proyecto.\\
+\\
+Se puede ejecutar de dos maneras distintas:
+\begin{enumerate}
+	\item Mediante el CMD en Windows: Abrimos el \textit{Símbolo del sistema}, nos movemos al directorio en el que se encuentran los ficheros fuentes y escribimos lo siguiente: \textbf{objectDetectorViaLaser.py}
+	
+	\item Mediante Spyder: Una vez en el IDE, abrimos el archivo objectDetectorViaLaser.py con el explorador de archivos y lo ejecutmos mediante el menú.
+\end{enumerate}
+
+
 
 \section{Pruebas del sistema}
+Durante el proyecto se han realizado diferentes pruebas para ayudar a detectar fallos y solucionarlos, avanzar en el desarrollo del programa o incluso comprender el funcionamiento de diferentes partes del láser.\\ En esta sección se explican las pruebas que se han ido realizando y los resultados de las mismas.
+\\
+
+En esre apartado no se incluyen las pruebas realizadas con el servidor de testeo puesto que han sido pruebas rápidas para la depuración del código y su formalización habría supuesto una notable carga de trabajo.
+
+\subsection{Prueba 1: Uso de RealTerm para visualizar la perspectiva del láser}
+\textbf{Descripción}Estas pruebas han sido de utilidad para escoger la ubicación óptima del láser respecto del palet en las etapas tempranas donde el código no era operativo. Se crea un mensaje para que el láser comienze a envíar informacion y se le envía: \textit{2,48,48,48,69,65,82,48,50,0x00,0x83,3}.
+\textbf{Entorno} Se realiza la conexión entre el láser y el ordenador utilizando un cable ethernet. Se conecta el láser a la fuente de alimentación para su funcionamiento. Se inicia el programa RealTerm. \\
+\textbf{Resultado esperado}Se reciben tramas en bucle de lo que el láser este visualizando. Se espera que funcione puesto que ya ha sido probado por otro alumno previamente en su TFG.\\
+\textbf{Resultado obtenido}Se reciben las tramas y se almacenan para su posterior análisis\\
+\textbf{Conclusiones} Es necesaria la traducción para poder comprender las tramas\\
+\textbf{Acciones derivadas}  Se codifican las tramas con el formato necesario para más adelante poder ser interpretadas por el código.\\
+
+\subsection{Prueba 2: Comrpobación de las tramas en las que aparece un palet}
+\textbf{Descripción}Para poder desarrollar el algoritmo de la mejor manera posible, se despliega un entorno de pruebas con un palet real de tipo europeo en el laboratorio. Se coloca el láser en el mismo plano que el palet y enfrentándose directamente a este separado por una distancia de 2 metros aproximadamente. Se realizan varias pruebas a diferentes distancias y variaciones del ángulo del palet respecto del láser, pero no se incluyen por ser de la misma  índole que la aquí descrita.
+\textbf{Entorno} Se realiza la conexión entre el láser y el ordenador utilizando un cable ethernet. Se conecta el láser a la fuente de alimentación para su funcionamiento. Se crea un pequeño programa para hacer logs de las tramas y separarlas entre sí e imprimir después las gráficas de las nubes de puntos obtenidas\\
+\textbf{Resultado esperado}Se visualiza claramente el palet en las gráficas\\
+\textbf{Resultado obtenido}Se observa gran cantidad de ruido, aunque se aprecia el palet centrado y a la distancia concreta a la que se ha ido separando del láser.También se comprueba las medidas entre los distintos elementos del palet.\\
+\textbf{Conclusiones} Se debe buscar una forma de eliminar el ruido que aparece en la nube de puntos y hace la tarea de detección mucho más compleja\\
+\textbf{Acciones derivadas}  Se codifica una limitación del ángulo que se procesa en el programa para quedarse con la parte frontal de la captura y poder aislar los puntos que representan al palet. Esto se ha realizado en base a que el algoritmo no debe detectar un palet sin ningun conocimiento previo, sino que se apoya en el conocimiento de la existencia del palet en un área concreta y debe verificar su posición y distancia.
