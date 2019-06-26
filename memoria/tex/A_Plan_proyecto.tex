@@ -1,13 +1,313 @@
 \apendice{Plan de Proyecto Software}
-
+	
 \section{Introducción}
 
+Este apartado del proyecto se centra en estimar de la manera más precisa posible los costes del proyecto. Estos se desglosan en costes de tiempo, costes en trabajo y costes monetarios.\\Este análisis nos permite conocer los recursos que van a ser necesarios para la realización del proyecto.
+Al tratarse este de un proyecto de investigación, es de especial dificultad predecir el marco temporal puesto que los plazos son complicados de cumplir cuando surgen dificultades, e incluso complicados también de predecir en un primer momento al no conocer parte de los procedimientos a realizar.
+
+El plan de proyecto software se divide en:
+\begin{itemize}
+\item Planificación temporal
+\item Estudio de viabilidad
+\end{itemize}
+
+La planificación temporal trata de ajustar los tiempos que va a llevar cada parte del proyecto. Se establecen las fechas en las que se inicia cada tarea y también en las que termina, basandose en la complejidad de cada una de ellas y los requisitos asociados.
+\\
+ En el estudio de viabilidad se tratan de estimar los costes monetarios del proyecto por un lado, y por otro adecuar el proyecto al marco legal actual, estudiando todas las leyes que podrían afectar, a nivel de licencias del software, protección de datos etc.
+
+
 \section{Planificación temporal}
+ En el proyecto se intenta seguir una metodología ágil conocida como SCRUM (Ya explicado en otras partes del proyecto) de la manera más fiel posible, teniendo en cuenta el carácter investigativo del proyecto y los contratiempos que han ido surgiendo a lo largo del desarrollo.
+
+A continuación se procede a desglosar el desarrollo del proyecto en los distintos sprints:
+
+\subsection{Sprint 0 (4/02/2019 - 20/02/2019)}
+Este es el sprint inicial, donde se plantearon los primeros pasos a seguir. Tras una reunión se decidió que los primeros pasos iban a ser la investigación del estado del arte para obtener conocimientos acerca de otras aproximaciones al problema. También se escogió el lenguaje de programación, el IDE en el que se trabajaría, siendo Python y Spyder los elegidos. Por último, se planteó la búsqueda de una fuente de alimentación para el láser.\\ La duración fue superior a la planificada hasta que la documentación sobre otros proyectos resultó suficiente.\\ Se estimó inicialmente una semana para el sprint pero finalmente se invirtió 16 días
+
+\subsubsection{Tareas}
+\begin{itemize}
+\item Búsqueda y configuraciíon de las herramientas para el desarrollo del proyecto (Spyder, LaTex, Python, RealTerm etc.)
+\item Comienzo de la documentación del estado del arte sobre otros proyectos que abordaran el mismo problema.
+\item Búsqueda de una fuente de alimentación adecuada para el equipo láser.
+\item Estudio y comprensión del código previo.
+\end{itemize}
+\imagen{sprint0}{Burndown del sprint 0}
+
+
+
+\subsection{Sprint 1 (20/02/2019 - 6/03/2019)}
+En este segundo sprint se comienza a aprender a utilizar LaTex para el desarrollo de la memoria, se comparan diferentes alternativas para la alimentación del láser, se realiza la búsqueda de un palet de tipo europeo para tener un entorno de pruebas y se desglosa el programa em los diferentes requisitos funcionales.\\ Se estudia el funcionamiento interno del láser a través de los manuales de usuario y también se estudia el formato de las tramas de datos que se envían. \\En este sprint se sigue con la investigación del estado del arte recopilando y analizando más artículos.\\En este sprint se cumplieron los plazos establecidos.
+\subsubsection{Tareas}
+
+\begin{itemize}
+\item Aprendizaje y primeros pasos con LaTex.
+\item Continuación de la documentación de proyectos similares y estudios científicos.
+\item Búsqueda de palet para el entorno de pruebas.
+\item Desglose de requisitos funcionales del programa.
+\item Estudio del funcionamiento del láser y las tramas de datos.
+\end{itemize}
+\imagen{sprint1}{Burndown del sprint 1}
+
+
+\subsection{Sprint 2 (11/03/2019 - 26/03/2019)}
+El objetivo principal de este sprint es plantear la estructura del código que se va a implementar en iteraciones futuras. Se ha planteado la división en tres capas utilizando el patrón de diseño modelo-vista-controlador puesto que se adecúa a la estructura planteada. Una vez entendido ya el código previo, se realiza una prueba de ejecución para comprobar su funcionamiento.
+En materia de investigación, se han seleccionado los estudios que comparten la fuente de datos (sensor láser) para analizar sus algoritmos y poder aplicar los conocimientos observados.\\
+Inicialmente se estimó una semana para la duración del sprint pero finalmente se alargó hasta ocupar dos semanas aproximadamente y se superaron las horas de trabajo que se habían previsto para el sprint.
+
+\subsubsection{Tareas}
+\begin{itemize}
+\item Planteamiento de la estructura del códdigo a implementar.
+\item Clasificación de artículos en función de la tecnología utilizada.
+\item Prueba de funcionamiento del código previo.
+\end{itemize}
+
+\imagen{sprint2}{Burndown del sprint 2 - Se puede observar que se invirtieron más horas de las previstas inicialmente}
+
+\subsection{Sprint 3 (28/03/2019 - 19/04/2019)}
+En este sprint se han realizado los primeros pasos a nivel de programación del proyecto.\\ Se ha estudiado la biblioteca TKinter de Python a través de la documentación y tuturiales online para realizar un apartado visual en el proyecto. Se ha modificado el código para posibilitar el procesado de las tramas de manera contínua. También se ha desarrollado una interfaz gráfica básica con TKinter. \\ Respecto al apartado investigativo, se ha generado una tabla comparativa entre los distintos estudios en función de la tecnología de los sensores de detección que utiliza cada uno.\\ Se ha creado el repositorio en GitHub en el que se irán publicando los cambios y variaciones del proyecto.\\ Ha sido uno de los sprints más largos debido a la semana santa y a distintos problemas surgidos a la hora de implementar la interfaz gráfica con TKinter, surgiendo errores que congelaron el desarrollo durante varios días.
+
+
+
+\subsubsection{Tareas}
+\begin{itemize}
+\item Investigación interfaces gráficas TKinter y alternativas.
+\item Comienzo de la codificación.
+\item Generar tabla comparativa entre los estudios.
+\item Procesar tramas de forma contínua.
+\item Generar repositorio en GitHub.
+\item Creación de interfaz gráfica básica.
+\end{itemize}
+
+\imagen{sprint3}{Burndown del sprint 3}
+
+\subsection{Sprint 4 (22/04/2019 - 06/05/2019)}
+
+En este sprint se comienzan a investigar técnicas para el tratamiento de la nube de puntos. Entre las estudiadas están la segmentación, clustering, filtrado mediante erosión y dilatación etc. Se recopilan tramas con el palet en diferentes posiciones y distancias para estudiarlas.\\
+En adición, se ha seguido mejorando la interfaz gráfica, que hasta ahora solo incluía control del programa pero no visualizado, y se han intentado añadir las gráficas de la nube de puntos dentro de la interfaz.\\ Así mismo se ha continuado desarrollando algunos apartados de la memoria del proyecto. \\ Parte del trabajo de la inclusión de la nube de puntos se arrastra hasta el siguiente sprint por no haber podido solucionarlo dentro del plazo previsto.
+
+
+
+\subsubsection{Tareas}
+\begin{itemize}
+\item Investigaciónde técnicas para el procesado de la nube de puntos.
+\item Investigación de la morfología de las tramas en las que se observa un palet para adecuar las comprobaciones pertinentes.
+\item Incluir gráficos de la nube de puntos en la interfaz.
+\item Continuación del desarrollo de la memoria.
+
+\end{itemize}
+
+\imagen{sprint4}{Burndown del sprint 4}
+
+\subsection{Sprint 5 (07/05/2019 - 21/05/2019)}
+
+Tras dedicar tiempo y esfuerzo en este sprint a la inclusión de la nube de puntos en la interfaz gráfica, se ha considerado que es un gasto de tiempo y esfuerzo demasiado grande para lo que está aportando al proyecto, por lo tanto se ha descartado dicho camino. En su lugar se intenta desarrollar un gráfico de puntos que se actualice en tiempo real con la libreria \href{https://matplotlib.org/}{Matplotlib}. Se ha investigado sobre los métodos necesarios y su codificación para hacer esto posible.\\ También se han hecho avances significativos en la memoria del proyecto.\\ Se ha creado un archivo de log con los puntos de cada trama para actualizar así la gráfica en tiempo real. \\ Se realizan los primeros pasos con el algoritmo de clustering escogido por ser un algoritmo sencillo pero potente y adecuado al problema (\href{https://es.wikipedia.org/wiki/K-medias}{KMEANS}).
+
+
+
+\subsubsection{Tareas}
+\begin{itemize}
+\item Investigar gráficos actualizables en matplotlib. 
+\item Codificar gráficos actualizables.
+\item Continuación del desarrollo de la memoria.
+\item Creación de archivo de log para mantener el gráfico actualizado.
+
+\end{itemize}
+
+\imagen{sprint5}{Burndown del sprint 5}
+
+\subsection{Sprint 6 (22/05/2019 - 05/06/2019)}
+En este sprint se sigue con la actualización de la memoria.\\ Se ha solucionado un problema por el cual las nubes de puntos se acumulaban en el fichero de log y hacian que la impresión de la gráfica se bloqueara. Esto último ha consumido la mayor parte del sprint al no poder localizar el origen del problema y bloquear el desarrollo.\\
+Se descarta el archivo de log como medio para actualizar las gráficas, dejando el archivo para labores de depuración. Se ha implementado la primera de las medidas en el algoritmo de reconocimiento de los palets. Consiste en un método que compara el tamaño de cada uno de los clusters. Las horas reales en este sprint fueron notablemente superiores a las estimadas en consecuencia de la depuración para encontrar el \textit{bug} que bloqueaba la ejecución del programa.
+
+
+
+
+\subsubsection{Tareas}
+\begin{itemize}
+\item Actualización de la memoria.
+\item Solucionar \textit{bug} por el que se bloquea el programa a la hora de imprimir las gráficas.
+\item Eliminar archivo intermedio y destinarlo a log de las tramas.
+\item Añadir comprobaciones al algoritmo de detección.
+
+\end{itemize}
+
+
+\imagen{sprint6}{Burndown del sprint 6}
+
+
+\subsection{Sprint 7 (6/05/2019 - 12/06/2019)}
+Este sprint tiene como objetivo principal añadir las comprobaciones a la detección para aumentar su robustez y precisión. Se ha codificado dos métodos para conocer la distancia y el angulo exacto de cada cluster. Para ello se utiliza el centro geométrico de los clusters. Se comienza alguna prueba con datos reales del palet para comprobar que estas adiciones al algoritmo funcionen adecuadamente.
+
+
+
+
+\subsubsection{Tareas}
+\begin{itemize}
+\item Mejorar algoritmo de detección.
+\item Probar algoritmo de detección.
+
+
+\end{itemize}
+
+\imagen{sprint7}{Burndown del sprint 7}
+
+
+\subsection{Sprint 8 (13/05/2019 - 27/06/2019)}
+Durante este sprint se han corregido fallos en el algoritmo que impedian que este funcionara correctamente:\\ Tras realizar las pruebas con los datos reales del palet, se observó que el centro geométrico de los clusters en los que se basaba el algoritmo para realizar los cáculos nunca iba a coincidir con ningún punto real de la nube de puntos que devolvía el láser, con lo cual calcular la separacion entre los clusters era imposible. Para solucionar este contratiempo se ha optado por calcular la distancia media entre todos los puntos de cada cluster, asi como el ángulo medio de todos los puntos, para así hallar el punto más representativo de cada cluster pero esta vez obteniendo así los datos de distancia y ángulo.\\ De esta manera aplicando el teorema del coseno se ha podido hallar la distancia real que separa los clusters y compararla con las medidas reales de separación entre las patas del palet. Esta es la comprobación final que confirma si se reconoce o no un palet.\\ En otra línea de trabajo se han realizado actualizaciones importantes en la memoria así como la realización de gran parte de los anexos.
+
+
+
+
+\subsubsection{Tareas}
+\begin{itemize}
+\item Arreglar detección de punto representativo de los clusters.
+\item Continuar con la realización de la memoria y los anexos.
+
+
+\end{itemize}
+
+\imagen{sprint8}{Burndown del sprint 8}
+
+\subsection{Sprint 9 (28/05/2019 - 03/07/2019)}
+En este sprint se ultiman los preparativos de entrega del proyecto. Se ha actualizado la memoria y los anexos, generado los documentos entregables y añadida documentación dentro dell código.
+
+
+
+\subsubsection{Tareas}
+\begin{itemize}
+\item Generar entregables del proyecto.
+\item Terminar la realización de la memoria y los anexos.
+
+
+\end{itemize}
+
+\imagen{sprint9}{Burndown del sprint 9}
+
 
 \section{Estudio de viabilidad}
 
+
+
 \subsection{Viabilidad económica}
 
+En este apartado se estudiara los constes y beneficios del proyecto en el caso de que si hubiera desarrollaro en el mundo laboral en lugar del académico.
+
+Los costes de desglosan en los siguientes: \\
+\begin{itemize}
+\item Costes de personal
+\item Costes de infraestructura hardware
+\item Costes de infraestructura software
+\end{itemize}
+
+\subsubsection{Costes de personal}
+Se atribuyen al salario de un desarrollador a tiempo parcial durante 4 meses, para el que se considera un salario neto de \euro{800} .
+Los porcentajes de cotización a la seguridad social del regimen de 2019 corresponen a 23.6\% y 4.7\% para empresas y trabajadores respectivamente.\\
+
+\begin{table}[]
+	\centering
+	\begin{tabular}{@{}ll@{}}
+		\toprule
+		Concepto & Coste (\euro) \\
+		\midrule
+		Salario neto & \EUR{800}  \\
+		Retención IRPF (15 \%) & \EUR{120} \\
+		Seguridad social (23.60 \%) & \EUR{189} \\
+		\midrule
+		Salario bruto (mensual) & \EUR{1109} \\
+		\midrule
+		Total 4 meses & \EUR{4436} \\
+		\bottomrule
+	\end{tabular}
+	\caption{Costes de personal}
+
+\end{table}
+
+\subsubsection{Costes de infraestructura hardware}
+
+Estos costes se componen de los costes del ordenador utilizado, el equipo láser y el cableado de alimentación y conexión con el láser.
+Además se considera el entorno de pruebas necesario para el desarrollo como alquiler durante los cuatro meses de duracion del desarrollo del proyecto.
+
+\begin{table}[]
+	\centering
+	\begin{tabular}{@{}lll@{}}
+		\toprule
+		Concepto & Coste (\euro) & Amortización\\
+		\midrule
+		Ordenador portátil & \EUR{650} & \EUR{43.35}  \\
+		Equipo láser &\EUR{400} & \EUR{27.29}\\
+		Cableado y fuente de alimentación & \EUR{40} & \EUR{2.7} \\
+		Alquiler mensual laboratorio & \EUR{350}mensual & \EUR {1400}\\
+		\midrule
+		Total 4 meses & & \EUR{1446.05} \\
+		\bottomrule
+	\end{tabular}
+	\caption{Costes de hardware}
+\end{table}
+
+\subsubsection{Costes de infraestructura software}
+
+En estos costes se incluye el coste de todas las licencias del software necesario para la realizacion del proyecto. Más alla del coste de la licencia del sistema operativo Windows 10 no se ha incurrido en ningún otro coste de software\\
+
+\begin{table}[]
+	\centering
+	\begin{tabular}{@{}lll@{}}
+		\toprule
+		Concepto & Coste (\euro) & Amortización\\
+		\midrule
+		Windows 10 Home  & \EUR{145} &\EUR{36.25}\\
+		\bottomrule
+	\end{tabular}
+
+
+	\caption{Costes de software}
+
+\end{table}
+Coste total de software 4 meses \EUR{36.25}.\\
+
+Concluyendo todos los costes mencionados anteriormente, suman un total de \EUR{5918.30}.
+
+\begin{table}[]
+	\centering
+	\begin{tabular}{@{}ll@{}}
+		\toprule
+		Concepto & Coste (\euro) \\
+		\midrule
+		Personal  & \EUR{4436} \\
+		Hardware & \EUR{1446.05} \\
+		Software & \EUR{36.25} \\
+		\midrule
+		Total & \EUR{5918.30} \\
+		\bottomrule
+	\end{tabular}
+	\caption{Coste total}
+\end{table}
+
+\subsubsection{Beneficios}
+Para la distribución del software creado en el proyecto se considera la implantación tanto a nivel hardware con el equipo láser como a nivel software en AGVs.
+Se calcula la implantación en unos 200 AGV's con un precio de \EUR400 por el láser (Precio de coste \EUR{225}), sumado a \EUR{50} en costes de software de caracter anual y \EUR{35} en costes de instalación y puesta en marcha.
+El total asciende a  \EUR{52000} en el primer año y \EUR{10000} anualmente a partir del segundo año.
+
 \subsection{Viabilidad legal}
+
+Para comprobar la viabilidad del proyecto se ha estudiado las licencias de todas las herramientas utilizadas:\\
+
+Librerias:\\
+\begin{itemize}
+	\item Numpy: licencia BSD.
+	\item MatPlotLib: licencia BSD.
+\end{itemize}
+Software:\\
+\begin{itemize}
+	\item Spyder: licencia BSD.
+	\item RealTerm: licencia BSD.
+	\item LaTex: licencia LPPL Versión 1.3c
+\end{itemize}
+
+Ninguna de las licencias anteriores dificulta la distribucion del proyecto ni ninguno de sus contenidos.
+
+Para el proyecto se ha optado por la licencia GNU-3.0 \cite{misc:gnu}.De esta manera se permite que el software sea usado, estudiado, compartido y modificado siempre y cuando la licencia se mantenga.
+
+
+
 
 

@@ -1,11 +1,193 @@
 \apendice{Especificación de Requisitos}
 
 \section{Introducción}
+En este anexo se detallan los objetivos de la aplicacion y se describe la especificación de requisitos del sistema a nivel funcional y no funcional.
 
 \section{Objetivos generales}
+Los objetivos generales del proyecto son los siguientes:
+
+\begin{itemize}
+\tightlist
+\item
+  Crear y mantener una conexión estable con el equipo láser que permita el intercambio de mensajes.
+\item
+  Recoger los datos que el láser retorne.
+\item
+  Realizar una traducción y tratamiento adecuados sobre los datos recibidos
+\item
+  Ejecutar una toma de decisión para confirmar si hay existencia o no de un palet en las lecturas.
+\end{itemize}
 
 \section{Catalogo de requisitos}
+En esta sección se exponen los requisitos que los objetivos generales del proyecto requieren.
+
+
+
+Se puede hacer la distinción entre requisitos funcionales y no funcionales:\\
+
+\subsection{Requisitos funcionales}
+
+
+\begin{itemize}
+	\item \textbf{RF-1 Conectar con el láser}
+	\item \textbf{RF-2 Enviar mensaje al láser}
+	\item \textbf{RF-3 Recibir tramas del láser}
+	\item \textbf{RF-4 Traducir las tramas }
+	\item \textbf{RF-5 Procesar las tramas}
+	\item \textbf{RF-6 Tomar decisión palet}
+	\item \textbf{RF-7 Imprimir las tramas}
+		
+\end{itemize}
+
+\subsection{Requisitos no funcionales}
+\begin{itemize}
+	\item \textbf{RNF-1 Precisión: El sistema debe concluir con la máxima precisión posible si ha detectado un palet y en caso afirmativo su distancia y su ángulo respecto del origen.}
+	\item \textbf{RNF-2 Rendimiento: La aplicación debe mostrar un rendimiento adecuado para que pueda procesar las tramas en tiempo real.}
+	\item \textbf{RNF-3 Modularidad: La aplicación debe permitir de manera sencilla mediante modularidad su extensión con nuevas funcionalidades}
+	\item \textbf{RNF-4 Mantenibilidad: La aplicación debe incorporar algun patrón arquitectónico que facilite su mantenimiento, comprensión y escalabilidad.}
+	\item \textbf{RNF-5 Conexión: Debe existir una conexión con el láser para poder ejecutar la aplicación.}
+\end{itemize}
 
 \section{Especificación de requisitos}
+\subsection{Casos de uso}
+A continuación se detalla la especificación de casos de uso derivados de los requisitos funcionales del proyecto:\\
+
+ \subsubsection{ C1: Conectar con el láser.}
+\textbf{Versión} 1.0\\
+\textbf{Autor} Mario Flores Espiga\\
+\textbf{Descripción} El programa debe crear una conexión con el equipo láser para poder intercambiar información a través de ella.\\
+\textbf{Precondición} Se ha lanzado el programa principal\\
+\textbf{Secuencia Normal:} 
+\begin{enumerate}
+	\item Se ejecuta el programa principal.
+	\item Se crea el objeto de tipo Socket.
+	\item Se establece la dirección IP y el número de puerto.
+	\item Se abre la conexión TCP a la dirección y el puerto especificados
+\end{enumerate}
+\textbf{Postcondición} Se ha recibido una respuesta por parte del láser tras haber enviado un mensaje petición.\\
+\textbf{Excepciones} El láser no está conectado o el la dirección está mal especificada.\\
+\textbf{Importancia} Alta\\
+\textbf{Comentarios} En el caso de no estar disponible la conexión, el sistema permite trabajar de manera transparente al usuario con un servidor local a modo de pruebas que suministra lecturas reales del láser. La única condición es que dicho servidor debe ser previamente puesto en marcha.
 
 
+ \subsubsection{ C2: Enviar mensaje al láser.}
+\textbf{Versión} 1.0\\
+\textbf{Autor} Mario Flores Espiga\\
+\textbf{Descripción} El sistema crea, codifica y envía un mensaje al láser solicitando el comienzo del envío de tramas\\
+\textbf{Precondición} La conexción con el láser se ha realizado con éxito. Requiere el cumplimiento del caso de uso C1.\\
+\textbf{Secuencia Normal:} 
+\begin{enumerate}
+	\item Se genera una lista con los caractéres adecuados para solicitar el envío de información contínua desde el láser.
+	\item Se condifica la lista en un array de bytes.
+	\item Se envía la lista al láser a través del objeto de tipo socket.
+
+\end{enumerate}
+\textbf{Postcondición} Se recibe la información de lectura o en su defecto de error del láser tras haber recibido la petición\\
+\textbf{Excepciones}Se recibe un mensaje de error debido a la codificación inadecuada del mensaje peticionario.\\
+\textbf{Importancia} Alta\\
+\textbf{Comentarios}
+
+ \subsubsection{ C3: Recibir tramas del láser (de manera contínua).}
+\textbf{Versión} 1.0\\
+\textbf{Autor} Mario Flores Espiga\\
+\textbf{Descripción} Se reciben los datos de lectura devueltos por el láser de manera contínua e ininterrumpida y se almacenan para su posterior tratamiento más adelante en flujo del programa\\
+\textbf{Precondición} El mensaje peticionario al láser debe estar formulado adecuadamente así como la conexión con el mismo. Deben cumplirse los casos de uso C1 y C2.\\
+\textbf{Secuencia Normal:} 
+\begin{enumerate}
+	\item Se escucha la dirección especificada en el programa para recibir la información.
+	\item El láser envía las tramas de manera contínua.
+	\item Se lleva un conteo de los bytes que se van recibiendo para separar en tramas la información.
+	\item El conteo de bytes recibido se resetea cuando se llega a la información máxima de cada trama para comenzar a procesar la trama siguiente.
+
+\end{enumerate}
+\textbf{Postcondición} La información recibida se almacena hasta su posterior tratamiento.\\
+\textbf{Excepciones}El sistema se bloquea en caso de desconexión del láser.\\
+\textbf{Importancia} Alta\\
+\textbf{Comentarios}
+
+ \subsubsection{ C4:Traducir las tramas.}
+\textbf{Versión} 1.0\\
+\textbf{Autor} Mario Flores Espiga\\
+\textbf{Descripción} Se realiza una traducción de cada trama recibida para facilitar su tratamiento posterior.\\
+\textbf{Precondición} Se ha recibido la trama correctamente. Deben cumplirse los casos de uso C1, C2, y C3.\\
+\textbf{Secuencia Normal:} 
+\begin{enumerate}
+	\item Los datos de lectura son particionados en función de los caractéres de inicio y fin de cada trama
+	\item Se descartan las divisiones vacías quedándose solo con la información relevante.
+	\item El sistema se queda con el segundo grupo de datos que son los que albergan la información de las lecturas, dado que el primer grupo se usa para datos de confirmación.
+	\item Se divide la información en grupos de 4 caractéres correspodiendose con cada punto de cada trama enviada por el láser.
+	\item Dado que los puntos han sido devueltos ordenados en función su ángulo de captura de menor a mayor, se crea una lista de igual tamaño que la de los puntos con ángulos crecientes.
+	\item Se realiza una conversión de coordenadas polares a coordenadas cartesianas.
+
+\end{enumerate}
+\textbf{Postcondición} Ha sido creada una lista de puntos en coordenadas cartesianas con su distancia al emisor en el eje de las X y su posición lateral respecto del láser en el eje de las Y\\
+\textbf{Excepciones}En el caso de no realizarse correctamente la traducción los datos del sistema no guardarian relación con los percibidos por el láser.\\
+\textbf{Importancia} Alta\\
+\textbf{Comentarios} Se ha añadido la funcionalidad de limitar el ángulo que procesa el programa para eliminar ruido innecesario del entorno y centrarse en la parte frontal del AGV a la hora de buscar la detección de un palet.
+
+
+ \subsubsection{ C5: Procesar los datos.}
+\textbf{Versión} 1.0\\
+\textbf{Autor} Mario Flores Espiga\\
+\textbf{Descripción} Se realiza una proceso de tratamiento mediante el algotirmo de detección sobre la nube de puntos de cada trama.\\
+\textbf{Precondición} Se ha recibido la trama correctamente. Se ha traducido la trama correctamente. Deben cumplirse los casos de uso C3 y C4.\\
+\textbf{Secuencia Normal:} 
+\begin{enumerate}
+	\item Se procesa la nube de puntos con un algoirtmo de clustering y nclusters = 3.
+	\item Se calculan los puntos que componen cada cluster
+	\item Se calcula el punto que representa mejor a cada cluster (distancia y ángulo medio de los puntos del cluster)
+	\item Se aplica la ley del coseno para conocer la distancia real que separa cada cluster
+	
+
+\end{enumerate}
+\textbf{Postcondición} El algoritmo de clustering se ha ejecutado con éxito y se han realizado los cálculos de cantidad de puntos y distancia que separa los clusters\\
+\textbf{Excepciones}En el caso de no haber seleccionado la zona en la que se encuentra el palet o obtener una lectura con mucho ruido los clusters pueden no corresponder a las patas del palet y efecutuarse una detección errónea\\
+\textbf{Importancia} Alta\\
+\textbf{Comentarios} Para desarrollos futuros se pueden añadir conprobaciones más rigurosas a la hora de tratar la nube de puntos.
+
+ \subsubsection{ C6: Tomar decisión de confirmación de palet.}
+\textbf{Versión} 1.0\\
+\textbf{Autor} Mario Flores Espiga\\
+\textbf{Descripción} En base a las mediciones realizadas en el caso de uso C5 se comparan con unas medidas fijas y entre si mismas para concluir la existencia o no de un palet en la nube de puntos\\
+\textbf{Precondición} Se han ejecutado las mediciones sobre los clusters correctamente\\
+\textbf{Secuencia Normal:} 
+\begin{enumerate}
+	\item Se compara el número de puntos que compone cada cluster para comprobar que sean de tamaño similar.
+	\item Se comprueba que la distancia que separa ambas patas concuerde con la del tipo de palet que se esté utilizando y sea similar entre sí.
+	\item Se emite el veredicto de la detección del palet.
+
+	
+
+\end{enumerate}
+\textbf{Postcondición} Se ha informado de la existencia o no existencia del palet en la trama procesada\\
+\textbf{Excepciones}En condiciones desfavorables la detección de palets puede no ser adecuada.\\
+\textbf{Importancia} Alta\\
+\textbf{Comentarios} 
+
+\subsubsection{ C7: Imprimir las tramas.}
+\textbf{Versión} 1.0\\
+\textbf{Autor} Mario Flores Espiga\\
+\textbf{Descripción} Se muestran de manera gráfica y contínua las tramas que el láser esta observando se detecte o no un palet.\\
+\textbf{Precondición} Se ha obtenido la trama y procesado adecuadamente. Requiere el cumplimiento de los casos de uso C1 hasta C5.\\
+\textbf{Secuencia Normal:} 
+\begin{enumerate}
+	\item Se particionan los puntos en dos listas correspondientes a cada eje de coordenadas.
+	\item Se introduce en la gráfica la nube de puntos.
+	\item Se actualiza de forma periódica los puntos de cada nueva trama.
+
+	
+
+\end{enumerate}
+\textbf{Postcondición} Se imprimen las gráficas de manera periódica con los puntos de cada trama.\\
+\textbf{Excepciones}La función encargada de actualizar los datos de cada trama puede fallar.\\
+\textbf{Importancia} Baja\\
+\textbf{Comentarios} 
+
+
+\subsection{Actores}
+
+Como único actor se plantea el usuario final de la aplicación, en concreto, la persona encargada de poner en marcha el sistema en un AGV. Interactua directamente con el sistema a través de línea de comandos o un IDE.
+
+
+\subsection{Diagrama de casos de uso}
+\imagen{casosdeuso}{Diagrama de casos de uso.}
