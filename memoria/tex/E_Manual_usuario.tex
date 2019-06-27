@@ -1,11 +1,44 @@
 \apendice{Documentación de usuario}
 
 \section{Introducción}
+En este manual se explica cómo instalar la aplicación y cómo utilizarla correctamente.
 
 \section{Requisitos de usuarios}
 
-\section{Instalación}
+Para poder utilizar la aplicación, se debe tener un hardware específico si lo que se quiere es realizar lecturas con el equipo láser. Existe la posibilidad de trabajar en modo local sin necesidad de la conexión con el láser, utilizando el servidor de prueba que se suministra con varias tramas, no obstante, no es el objetivo final de la aplicación sino un paso intermedio para su correcto desarrollo.\\
+Se necesita el siguiente material:\\
+\begin{itemize}
+\item Un ordenador en el que poder ejecutar el programa. Es necesario que disponga de un puerto ethernet. Debe cumplir ciertos requerimientos software que se detallan en el apartado instalación \ref{section:instalacion}.
+\item El equipo láser para realizar las lecturas de puntos. Es de vital importancia para el funcionamiento del programa que el láser corresponda con el modelo utilizado para el desarrollo (Hokuyo Safety Laser Scanner /UAM-05LP-T301), pues el programa ha sido codificado en función de las características y los modos de trabajo de este láser. En el caso de utilizar un modelo distinto sería necesaria una profunda reforma del código para que funcionara correctamente.
+\item Fuente de alimentación DC de 24v necesaria para suministrar al láser de energía eléctrica continua.
+\item Cable de red Ethernet para efectuar el intercambio de mensajes con el equipo láser.
+\end{itemize}
+\section{Instalación}\label{instalacion}
+Para poder ejecutar el programa es necesario haber instalado antes los siguientes elementos software:\\
+\begin{itemize}
+\tightlist
+\item Python
+\item Bibliotecas necesarias (Sklearn, matplotlib, numpy)
+\item Opcional: Un entorno de desarrollo integrado. Se recomienda Spyder.
+\end{itemize}
+
+Las instrucciones de instalación de estos componentes se encuentran detalladas en el Anexo D - Manual del programador \ref{section:instrucciones}
 
 \section{Manual del usuario}
 
+Para comenzar la ejecución de la aplicación, una vez completados los pasos de instalación, tenemos dos opciones disponibles: la ejecución desde línea de comandos o la ejecución desde un IDE compatible con Python. \\
 
+\subsection{Ejecución desde la línea de comandos}
+Primero debemos abrir una terminal (cmd) y navegar hasta la ruta que contiene los ficheros Python (source).\\
+Una vez estemos en ese directorio y asegurándose de que el equipo láser esté encendido y conectado, introducir la siguiente línea en el cmd y ejecutarla: \textit{objectDetectorViaLaser.py}.\\
+En el caso de querer trabajar con el servidor local, es necesario previo al anterior paso ejecutar la siguiente línea en otra terminal a parte: \textit{DummySV.py}.
+\imagen{paso1consola}{Navegación al directorio 'source'}
+\imagen{paso2consola}{Ejecución del archivo}
+
+\subsection{Ejecución desde un IDE}
+Existen multitud de aplicaciones compatibles con Python. En este proyecto se ha trabajado con Spyder.\\
+Una vez instalada la aplicación deseada siempre y cuando sea compatible, abrimos en el IDE los archivos necesarios (\textit{objectDetectorViaLaser.py y DummySV.py en el caso de querer trabajar en local}) y lanzamos el primero de ellos.\\
+
+
+\imagen{paso1ide}{Apertura de los archivos}
+\imagen{paso2ide}{Ejecución de la aplicación}
