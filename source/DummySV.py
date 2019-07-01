@@ -17,15 +17,15 @@ def conexiones(socket_cliente):
     print ("[*] Mensaje recibido: %s" % peticion)
     global lecturas
     global utilizadas
-    if utilizadas >= len(lecturas):
-        utilizadas = 0
-    mensaje = lecturas[utilizadas]
-    utilizadas = utilizadas+1
-    b = bytearray()
-    b.extend(map(ord, mensaje))
-    print(len(mensaje))
-  
     while True:
+        if utilizadas >= len(lecturas):
+            utilizadas = 0
+        mensaje = lecturas[utilizadas]
+        utilizadas = utilizadas+1
+        b = bytearray()
+        b.extend(map(ord, mensaje))
+      
+        
         socket_cliente.send(b)
     socket_cliente.close()
 

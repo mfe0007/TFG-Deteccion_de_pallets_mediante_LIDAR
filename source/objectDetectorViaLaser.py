@@ -10,7 +10,6 @@ import GUI
 import time
 import numpy as np
 from sklearn.cluster import KMeans
-from operator import itemgetter
 
 
     
@@ -23,6 +22,8 @@ from operator import itemgetter
 
 class Operations:
     
+    graficos = None
+    text = ''
     
     
     
@@ -278,9 +279,17 @@ class Operations:
             file.write("-----\n")
         file.close()
         
-        GUI.MyGUI.printGraph(self,coorXgrafico,coorYgrafico)
-        #if(flag):
-            #gui_test = GUI(points)
+        
+        
+        
+        
+        
+            
+        
+
+            
+            
+            
             
 
             
@@ -340,16 +349,30 @@ class Operations:
                 (abs(leg_separation[1] - fixed_separation)<leg_tolerance))):
                 
                 
-                dist = m_dist/3
-                ang = 90 - (m_ang/3)
-                print("Palet detectado con exito a una distancia de ",dist, " y un ángulo de ", ang)
+                dist = round((m_dist/3)/1000,2)
+                ang = round(90 - (m_ang/3),2)
+                print("Palet detectado con exito a una distancia de ", dist, "m y un ángulo de " ,ang, " grados")
+                self.text = str(dist)+"m "+str(ang)+"º"
                 retorno = True
-            
+                
+                
+        if(retorno == False):
+            self.text = ' '
+        '''
+        APARTADO DE LLAMADA A LA GUI
+        '''
+        if(flag):
+            self.graficos = GUI.MyGUI(points)
+        
+        
+        self.graficos.printPoints(self.graficos,points,self.text)
+        
+        
         end = time.time()
         #Calculamos la tasa de FPS en funcion del tiempo transcurrido desde la llamada a la funcion            
-        print("FPS:",(1/(end-start)))
+        print("FPS:",round(1/(end-start),2))
         #Se añade un pequeño retardo para poder visualizar mejor los resultados
-        time.sleep(1)
+        time.sleep(4)
         return retorno
         
     

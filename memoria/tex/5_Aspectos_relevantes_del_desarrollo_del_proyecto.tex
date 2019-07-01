@@ -56,7 +56,7 @@ En la siguiente imagen se pueden observar desde un plano cenital las tres patas 
 
 		Inicialmente, se comenzó con la implementación de una interfaz gráfica en \href{https://docs.python.org/2/library/tkinter.html}{TKinter}
 , pero la necesidad de aprender e investigar sobre esta librería de Python y varios problemas de funcionamiento causaron el cambio a otras librerias más sencillas.\\
-Posteriormente, con el fin de poder observar de una manera sencilla pero a la vez suficientemente detallada los datos en tiempo real que transmite el láser, se ha utilizó en lugar de TKinter, las animaciones de la biblioteca \href{https://matplotlib.org/}{matplotlib}.Tras varios problemas de implementación que causaban que la gráfica no se refrescara, se consiguió solucionar el funcionamiento.\\ De esta manera el usuario puede observar en tiempo real las tramas que el láser está procesando, junto con la confirmación de palet en la trama actual. 
+Posteriormente, para realizar una impresión de datos en tiempo real se probó con la librería \href{https://matplotlib.org/}{matplotlib}. Tras varios problemas de implementación que causaban que la gráfica no se refrescara, se optó por desarrollar un sistema de logs en el cual cada trama se queda guardada en un archivo de imagen junto con los datos de distancia y ángulos sólo en el caso de haber sido una detección afirmativa.\\ De esta manera el usuario puede observar trama por trama detenidamente lo que el láser ha procesado, junto con los datos de ángulo y distancia. Estos logs se almacenan en la carpeta \textit{Matplotlib\textunderscore logs} dentro del directorio \textit{source}.
 
 
 
