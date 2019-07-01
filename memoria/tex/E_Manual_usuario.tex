@@ -8,8 +8,18 @@ En este manual se explica cómo instalar la aplicación y cómo utilizarla corre
 Para poder utilizar la aplicación, se debe tener un hardware específico si lo que se quiere es realizar lecturas con el equipo láser. Existe la posibilidad de trabajar en modo local sin necesidad de la conexión con el láser, utilizando el servidor de prueba que se suministra con varias tramas, no obstante, no es el objetivo final de la aplicación sino un paso intermedio para su correcto desarrollo.\\
 Se necesita el siguiente material:\\
 \begin{itemize}
-\item Un ordenador en el que poder ejecutar el programa. Es necesario que disponga de un puerto ethernet. Debe cumplir ciertos requerimientos software que se detallan en el apartado instalación \ref{section:instalacion}.
-\item El equipo láser para realizar las lecturas de puntos. Es de vital importancia para el funcionamiento del programa que el láser corresponda con el modelo utilizado para el desarrollo (Hokuyo Safety Laser Scanner /UAM-05LP-T301), pues el programa ha sido codificado en función de las características y los modos de trabajo de este láser. En el caso de utilizar un modelo distinto sería necesaria una profunda reforma del código para que funcionara correctamente.
+\item Un ordenador en el que poder ejecutar el programa. Es necesario que disponga de un puerto ethernet. Debe cumplir ciertos requerimientos software que se detallan en el apartado instalación \ref{section:instalacion}. Para la ejecución del IDE Spyder contenido en el entorno Anaconda se recomienda cómo \href{https://docs.anaconda.com/anaconda/install/}{mínimo}:
+\begin{itemize}
+\tightlist
+
+
+\item Sistema operativo: Windows 7 or superior, 64-bit macOS 10.10+, o Linux, incluyendo Ubuntu, RedHat, CentOS 6+, y otros.
+\item Disco duro: Mínimo 5GB de espacio libre para la descarga e instalación.
+\item Memoria: 4GB de memoria RAM
+\end{itemize}
+
+
+\item El equipo láser para realizar las lecturas de puntos. El modelo utilizado para el desarrollo (Hokuyo Safety Laser Scanner /UAM-05LP-T301).
 \item Fuente de alimentación DC de 24v necesaria para suministrar al láser de energía eléctrica continua.
 \item Cable de red Ethernet para efectuar el intercambio de mensajes con el equipo láser.
 \end{itemize}
@@ -27,6 +37,8 @@ Las instrucciones de instalación de estos componentes se encuentran detalladas 
 \section{Manual del usuario}
 
 Para comenzar la ejecución de la aplicación, una vez completados los pasos de instalación, tenemos dos opciones disponibles: la ejecución desde línea de comandos o la ejecución desde un IDE compatible con Python. \\
+No es necesaria la modificacíon de ningún parámetro por parte del usuario, en sistema viene confirgurado automáticamente. \\
+El sistema genera una gráfica que se va actualizando conforme recibe las tramas del láser en tiempo real y devolviendo la decisión sobre la existencia o no de palet en la trama actual en pantalla.
 
 \subsection{Ejecución desde la línea de comandos}
 Primero debemos abrir una terminal (cmd) y navegar hasta la ruta que contiene los ficheros Python (source).\\

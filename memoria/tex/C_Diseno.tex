@@ -9,12 +9,28 @@ Se divide en diseño de datos, diseño procedimental y diseño arquitectónico.
 La aplicación está compuesta por las siguientes entidades:
 
 \begin{itemize}
-\item \textbf{objectDetectorViaLaser:} En este archivo se encuentra la clase raiz del sistema (clase Operations).\\ En ella se maneja la conexión con el láser, la traducción de los datos y el procesado de los mismos.
-\item \textbf{Punto:}Esta es la clase que codifica los puntos. Las lecturas del láser son creadas como puntos en la etapa de traducción, encapsulando la información mediante las dos coordenadas que representan a un punto en el espacio 2D.
-\item \textbf{DummySV:}Servidor de pruebas para poder usar el programa en momentos de desconexión con el láser.
-\item \textbf{GUI:}Aquí se encuentra la clase encargada del apartado gráfico del sistema (clase MyGUI). 
+\item \textbf{objectDetectorViaLaser:} En este archivo se encuentra la clase raiz del sistema (clase Operations).\\ En ella se maneja la conexión con el láser, la traducción de los datos y el procesado de los mismos. Se compone de los siguientes métodos: 
+\begin{itemize}
+\item mainFunction: Función principal que codifica la conexión con el láser y envío y recepción de mensajes.
+\item procesadoYMuestra: Esta función agrupa las técnicas de traducción, clustering y procesado de las tramas del láser.
+\item realClusterAngles: Calcula el ángulo medio de todos los puntos de cada cluster.
+\item realClusterDistances: Calcula la distancia media a todos los puntos de cada cluster.
+\item betweenClusterDistances: Calcula la distancia real que separa a los agrupamientos.
+\item findIndex: Encuentra el índice del punto que se le pasa como parámetro en la lista que también recibe como parámetro.
+\item clusterSize: Computa el total de puntos que pertenecen a cada cluster.
+\item creaAngulos: Función para generar una lista de ánglulos que se utiliza en el proceso de traducción de coordenadas.
+\item aCartesianos: Función encargada de la traducción de coordenadas polares a cartesianas.
+\item toDecimal: Encargada de realizar el cambio de base hexadecimal a decimal de las tramas enviadas por el láser.
 \end{itemize}
+\item \textbf{Punto:} Esta es la clase que codifica los puntos. Las lecturas del láser son creadas como puntos en la etapa de traducción, encapsulando la información mediante las dos coordenadas que representan a un punto en el espacio 2D. Sus funciones son simplemente getters y setters para las variables de la clase, las cuales codifican las dos coordenadas que identifican a un punto 2D en las coordenadas cartesianas.
 
+\item \textbf{DummySV:} Servidor de pruebas para poder usar el programa en momentos de desconexión con el láser.
+\item \textbf{GUI:} Aquí se encuentra la clase encargada del apartado gráfico del sistema (clase MyGUI). 
+\begin{itemize}
+\item animate: Función encargada de realizar la actualización en tiempo real de valores en la gráfica.
+\item start: Esta función es la encargada de iniciar la representación de los gráficos por primera vez.
+\end{itemize}
+\end{itemize}
 Los datos que se tratan en todo el programa son coordenadas cartesianas, encapsuladas como ya se ha explicado con la clase Punto, y los ángulos, los cuales se almacenan en una lista.
 
 \section{Diseño procedimental}

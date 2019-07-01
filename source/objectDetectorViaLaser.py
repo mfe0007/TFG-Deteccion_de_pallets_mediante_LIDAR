@@ -10,6 +10,7 @@ import GUI
 import time
 import numpy as np
 from sklearn.cluster import KMeans
+from operator import itemgetter
 
 
     
@@ -91,7 +92,6 @@ class Operations:
         for element in container:
             if(punto.getX() == element.getX() and punto.getY() == element.getY()):
                 ret = j
-                print("Encontrado\n")
                 break
             else:
                 j+=1
@@ -108,17 +108,25 @@ class Operations:
     Solo para clusters de tamaño 3
     Devuelve una tupla compuesta por la distancia que separa el cluster 0 del 1 y el cluster 1 del 2
     '''
-    def betweenClusterDistances(self,angles,distances):
-        #Calcula las distancias entre los distintos centros geometricos de los clusters teoricos
+    def betweenClusterDistances(self,clusters):
         
-        angle0to1 = angles[1]-angles[0]
-        angle1to2 = angles[2]-angles[1]
+        pi = 22/7
+        angles = list()
+        distances = list()
+        for e in clusters:
+            angles.append(e[0])
+            distances.append(e[1]) 
+            
+        #Calcula las distancias entre los distintos centros geometricos de los clusters teoricos
+        angle0to1 = (angles[1]-angles[0])*(pi/180)
+        angle1to2 = (angles[2]-angles[1])*(pi/180)
+        
         
         #Aplicando el teorema del coseno
-        distance01 = math.sqrt(math.pow(distances[0],2)+math.pow(distances[1],2)-(distances[0]*distances[1]*math.cos(angle0to1)))
-        distance02 = math.sqrt(math.pow(distances[1],2)+math.pow(distances[2],2)-(distances[1]*distances[2]*math.cos(angle1to2)))
+        distance01 = math.sqrt(math.pow(distances[0],2)+math.pow(distances[1],2)-(2*distances[0]*distances[1]*math.cos(angle0to1)))
+        distance02 = math.sqrt(math.pow(distances[1],2)+math.pow(distances[2],2)-(2*distances[1]*distances[2]*math.cos(angle1to2)))
         
-        return list(distance01,distance02)
+        return list([distance01,distance02])
     
     '''
     Funcion que calcula la distancia media de todos los puntos de un cluster respecto del emisor (laser)
@@ -130,7 +138,11 @@ class Operations:
         mean_distances = np.zeros(3)
         #en sum_distances se guarda una tupla por cada cluster que se compone de la suma de todas las 
         #distancias y el numero de elementos que componen el cluster
+        
+        
         for i in range(0,len(model.labels_)):
+            
+                
             sum_distances[model.labels_[i]][0]+=float(distances[i])
             sum_distances[model.labels_[i]][1]+=1
             
@@ -143,21 +155,38 @@ class Operations:
     Recibe una lista resultado del clustering kmeans y el vector de angulos de todos los puntos
     Devuelve un vector de tamaño k (3) con los angulos medios a cada cluster
     '''
+    #El primer bucle se usa para que las distancias de los clusters queden ordenadas según el cluster al que pertenecen 
+    #numerando los clusters de izquierda a derecha
     def realClusterAngles(self,model,angulos):
         sum_angles = np.zeros((3,2))
         mean_angles = np.zeros(3)
         #Calcula la distancia media que separa a los puntos de cada cluster respecto del LIDAR
         #en sum_distances se guarda una tupla por cada cluster que se compone de la suma de todas las 
         #distancias y el numero de elementos que componen el cluster
+        
         for i in range(0,len(model.labels_)):
+               
             sum_angles[model.labels_[i]][0]+=float(angulos[i])
             sum_angles[model.labels_[i]][1]+=1
             
         for j in range(0,len(sum_angles)):
             mean_angles[j] = sum_angles[j][0]/sum_angles[j][1]
+        
         return mean_angles
+    
+    '''
+    Función que calcula si un punto está dentro del área de interes establecida
+    '''
               
-                        
+    def esValido(p):
+
+        min_x = -1000
+        max_x = 1000
+        min_y = 950
+        max_y = 2050
+        
+        return (max_x > p.getX() > min_x and max_y > p.getY() > min_y)
+                            
     '''
     Funcion  encargada de procesar los datos recibidos desde el laser 
     (previo tratamiento en la funcion principal)
@@ -203,15 +232,38 @@ class Operations:
         listaCY=list()
         for pun in listaPolares:
             punto=Operations.aCartesianos(pun)
-            listaCX.append(punto.getX())
-            listaCY.append(punto.getY())
             listaCartesianos.append(punto)
+        
+        
+        new_distances = list()
+        new_angles = list()
+        
+        for p in listaCartesianos:
+            
+            if(Operations.esValido(p)):
+                
+                listaCX.append(p.getX())
+                listaCY.append(p.getY())
+                
+                #Pasamos a guardar la distancia y el ángulo a ese punto
+                i = self.findIndex(p,listaCartesianos)
+                new_angles.append(angulos[i])
+                new_distances.append(distancias_puntos[i])
+                
+                
+                
+        angulos = new_angles
+        distancias_puntos = new_distances
+                
+
             
         
+        #Seleccionamos el área de interés
         
             
         coorXgrafico = np.array(listaCX)
         coorYgrafico = np.array(listaCY)
+        
 
         #Creacion de archivo de logging para labores de depuracion 
         file = open("plotdata.txt","w")
@@ -226,12 +278,10 @@ class Operations:
             file.write("-----\n")
         file.close()
         
-        
-        if(flag):
-            #Creacion de instacia de la clase GUI
-            myGUI = GUI.MyGUI()
-                               
-            myGUI.start(myGUI.animate,points)
+        GUI.MyGUI.printGraph(self,coorXgrafico,coorYgrafico)
+        #if(flag):
+            #gui_test = GUI(points)
+            
 
             
         
@@ -243,11 +293,11 @@ class Operations:
         
         
         '''
-        Primera comprobacion en la que se mide que los tres cluster tengan un tamali similar
+        Primera comprobacion en la que se mide que los tres cluster tengan un tamaño similar
         Si los tres clusters tienen aproximadamente el mismo tamaño continuamos con el proceso
         La tolerancia se expresa en el numero de puntos de diferencia entre un cluster y otro
         '''
-        point_tolerance = 150
+        point_tolerance = 10
         cluster_size = self.clusterSize(model.labels_,3)
         dif1 = abs(cluster_size[0]-cluster_size[1])
         dif2 = abs(cluster_size[1]-cluster_size[2])
@@ -255,27 +305,44 @@ class Operations:
 
         if((dif1 < point_tolerance) and (dif2 < point_tolerance) and (dif3 < point_tolerance)):
             
-            
+            #Juntamos los datos por pares de angulo y distancia, y los ordenamos por cluster de izquierda a derecha
             cluster_distances = self.realClusterDistances(model,distancias_puntos)
             cluster_angles = self.realClusterAngles(model,angulos)
             
+            clusters = list()
+            m_dist = 0
+            m_ang = 0
+            for ang,dist in zip(cluster_angles,cluster_distances):
+                clusters.append([ang,dist])
+                m_ang += float(ang)
+                m_dist += float(dist)
+            
+
+            clusters.sort()
+            
+            
+            
+
             '''
             Ahora con los datos de angulos y distancias de los centros calculamos
             la distancia real que separa los centros de los clusters puesto que la distancia que se aprecia 
             en los datos de medida podria distorsionarse en funcion de la distancia al palet
             '''
             
-            leg_separation = self.betweenClusterDistances(cluster_angles,cluster_distances)
-            
+            leg_separation = self.betweenClusterDistances(clusters)
+
             #Separación de las patas de un palet. Ajustable a diferentes modelos de palet
-            fixed_separation = 677.5
+            fixed_separation = 350
             #Tolerancia en la distancia de las patas del palet
             leg_tolerance = 20
             
             if(((abs(leg_separation[0] - fixed_separation)<leg_tolerance) and
                 (abs(leg_separation[1] - fixed_separation)<leg_tolerance))):
                 
-                print("Palet detectado con exito")
+                
+                dist = m_dist/3
+                ang = 90 - (m_ang/3)
+                print("Palet detectado con exito a una distancia de ",dist, " y un ángulo de ", ang)
                 retorno = True
             
         end = time.time()
@@ -364,13 +431,13 @@ class Operations:
                 target=datos_lectura[1][97:]
                 
                 #Diferenciamos entre la primera iteracion e iteraciones posteriores
-                #por razones de los graficos de la GUI
+                #por razones de actualización de los graficos de la GUI
                 if(iteration == 1):
-                    datosFinales.append(list(self.procesadoYMuestra(target,True)))
+                    self.procesadoYMuestra(target,True)
                 else:
-                    datosFinales.append(list(self.procesadoYMuestra(target,False)))
+                    self.procesadoYMuestra(target,False)
     
-    
+            return datosFinales
                         
                 
         finally:

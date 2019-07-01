@@ -3,18 +3,27 @@
 La parte del algoritmo más compleja reside en el propio algoritmo de detección de palets y en el tratamiento de los datos recibidos desde el láser.
 El flujo del programa se compone de los siguientes pasos:
 \begin{itemize}
-	\item Preprocesadode los datos: \\
+	\item Preprocesado de los datos: \\
 	\begin{enumerate}
 		\item Primero se establece una conexión con el LIDAR, mediante TCP.
 		\item Posteriormente se tratan los datos para su interpretación en el algotimo detector.
 	\end{enumerate}
+\imagen{diagramaflujo1}{Diagrama superficial del flujo de la aplicación}
 	\item Algoritmo detector de palet: \\
 	\begin{enumerate}
 		\item Se selecciona un área de interes donde se conoce previamente que puede estar el palet.
 		\item Sobre la nube de puntos ya acotada se realiza un clustering con el algoritmo KMEANS.
-		\item Se calculan las distancias entre los diferentes clusters y al emisor, para contrastarlas con las medidas reales del tipo de palet que se esté utilizando y validar así la ocurrencia del palet.
+		\item Sobre los datos resultantes de la ejecución del algoritmo de agrupamiento, se realiza un conteo de los puntos que conforman cada cluster.
+		\item Se comprueba que el número de puntos de cada cluster tenga un tamaño igual al del resto de clusters aplicando una tolerancia ajustada por el programador.
+		\item Se hallan la distancia y ángulo medio a cada uno de los clusters.
+		\item En función de esos datos se calcula la separación real entre los clusters.
+		\item Se contrasta dichas separaciones entre sí mismas y con el dato real de distancia entre las patas del palet, de nuevo con cierta tolerancia.
+		\item Se comunica la detección positiva o negativa del palet en función de las comprobaciones anteriores.
+
 
 	\end{enumerate}
+En el siguiente diagrama de flujo se representa el algoritmo anteriormente descrito. \emph{F} corresponde a la distancia fija que separa las patas de un palet, tomada de las medidas reales.
+\imagen{Diagramaflujo2}{Diagrama del algoritmo de detección}
 	\end{itemize}
 
 \newpage
@@ -36,13 +45,15 @@ La traducción se realiza de la siguiente manera:\\
 	\end{enumerate}
 	\imagen{traduccion}{Traducción de los datos hexadecimal-decimal}
 	
-	Después, por cada dato traducido, se asigna a cada uno un ángulo correspondiente para expresar así la lectura en coordenadas		polares.\\
-	Posteriormente, se traducen los datos de coordenadas polares a coordenadas cartesianas mediante la siguiente formula:
+	Después, por cada dato traducido, se asigna a cada uno un ángulo correspondiente para expresar así la lectura en coordenadas polares.\\
+	Posteriormente, se traducen los datos de coordenadas polares a coordenadas cartesianas mediante la siguiente formula: \\
 
 	x = r * cos(\(\theta\))\\
 	y = r * sin(\(\theta\))\\
 
-	Ahora ya se dispone de una lista de distancia y angulo, adecuada para poder ser representada en una gráfica y tratada en el algoritmo detector.\\
+\imagen{graficopuntos}{Gráfico en el que se muestra una lectura real del entorno}
+
+	Ahora ya se dispone de una lista de distancia y ángulo, adecuada para poder ser representada en una gráfica y tratada en el algoritmo detector.\\
 
 
 \section{Algoritmo de detección}
@@ -62,6 +73,8 @@ Después se actualizan los nuevos centros como el centro de cada cluster que se 
 		El algorimo es de carácter iterativo, ejecutándose varias veces hasta que la solución converge (Las soluciones de cada iteración no cambian) \cite{wiki:kmeans} .\\ \\
 
 Se ejecuta el algoritmo K-means con k=3, puesto que la característica por la que se está intentando identificar el palet es por sus tres patas frontales, las cuales el láser va a observar de manera frontal, al ir este montado en la parte de las palas del AGV. \\
+
+\subsection{Comprobaciones del algoritmo sobre el resultado de clustering}
 Una vez agrupados los puntos que corresponden a cada pata,se comprueba que el número de cada cluster tiene un tamaño similar al resto (por motivos de ruido en las lecturas del láser, se aplica un margen de error especificado en el código).Concretamente se compararn el número de puntos que componen a cada cluster.\\ \\
 Posteriormente, se calcula la distancia media a todos los puntos de cada cluster desde el emisor (en este caso el láser) así como el ángulo medio de los puntos de cada cluster.\\
 Con esto conseguimos representar cada cluster por un punto (ángulo y distancia).\\
@@ -74,7 +87,7 @@ Ahora, mediante el teorema del coseno, y con los datos de distancia y ángulo de
 \imagen{europaletmedidas}{Medidas de un palet de tipo europeo}
 
 
-Una vez realizadas todas estas comprobaciones, se puede concluir la existencia de un palet.
+Una vez realizadas todas estas comprobaciones, en caso de haberlas superado, se puede concluir la existencia de un palet.
 
 
 		
@@ -92,7 +105,7 @@ Una vez realizadas todas estas comprobaciones, se puede concluir la existencia d
 Se ha usado el siguiente hardware para la realización del proyecto:
 \begin{itemize}
 	\item Sensor Láser: Encargado de sondear el entorno y devolver los datos obtenidos. El láser que se va a utilizar es de tipo LIDAR (Laser Imaging Detector And Ranging).
-Este tipo de láser emite ondas infrarrojas, para despues recoger las ondas de vuelta, y en función del tiempo entre la emisión y la recepción calcula la distancia.
+Este tipo de láser emite haces de luz infrarroja, para despues recoger la reflexión de dichos haces de vuelta, y en función del tiempo entre la emisión y la recepción calcula la distancia.
 En este proyecto, se ha utilizado el láser Hokuyo Safety Laser Scanner (UAM-05LP-T301), capaz de distinguir tres zonas independientes de detección en función de la distancia a la que se encuentren los objetos en el entorno.
 \imagen{hokuyo}{Sensor láser Hokuyo utilziado en el proyecto}
 	\item Cable ethernet: A través de este cable se envian y reciben datos del láser al ordenador. Se usará un UAM-NET, un cable Ethrernet de 3 metros de longitud desarrollado por Hokuyo, misma empresa desarrolladora del láser empleado, lo que hace que resulte idóneo para evitar problemas de incompatibilidad y asegurar así el correcto funcionamiento del sistema.
